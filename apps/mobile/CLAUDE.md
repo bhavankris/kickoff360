@@ -4,25 +4,38 @@ Expo SDK 56 + Expo Router 56 + NativeWind v4. Consumes `@repo/core` for all data
 
 ## Layout
 - `src/app/`        Expo Router routes ONLY. Each route re-exports a screen body.
-  - `(auth)/sign-in`            — Google sign-in
-  - `(onboarding)/profile-setup` — display name + country
-  - `(app)/` tabs               — index (Schedule), scores, table, players
+  - `(auth)/sign-in`             — welcome + Google sign-in
+  - `(onboarding)/profile-setup` — display name + pick-your-nation (live re-theme)
+  - `(app)/(tabs)/`              — index (Home), matches, live, groups, players
+  - `(app)/match/[id]`           — Match Centre (Summary / Stats / Lineups / Info)
+  - `(app)/profile`              — profile modal (team change, theme, appearance)
 - `src/screens/`    Screen bodies (the actual UI). Routes re-export these.
+- `src/components/` Shared UI kit: ui (Icon/Flag/Pill/Card…), matchui, TabBar,
+                    HeaderGradient, LiveCountdown, PitchLineup
 - `src/providers/`  AppProviders (Query + SafeArea + Gesture), AuthProvider, ThemeProvider
 - `src/platform/`   `.native.ts` / `.web.ts` adapters (Google Sign-In). Contract in signIn.ts.
-- `src/lib/`        firebase.ts (injects AsyncStorage persistence), env.ts (EXPO_PUBLIC_*)
-- `src/theme/`      vars.ts — turns core palette data into NativeWind vars()
-- `src/store/`      Zustand — UI state ONLY
+- `src/lib/`        firebase.ts/.native.ts (auth persistence per platform, emulator wiring),
+                    env.ts (EXPO_PUBLIC_*)
+- `src/theme/`      fonts.ts — Archivo/Space Mono loading + `f()`/`mono()` weight helpers
+- `src/store/`      Zustand — UI state ONLY (prefs: mode, intensity, onboarding preview team)
+
+## Theming
+`ThemeProvider` resolves `computeTheme(countryCode, { mode, intensity })` from core and
+exposes tokens via `useTheme()`. The favourite team comes from the Firestore profile;
+during onboarding `prefs.previewTeam` drives the live re-theme. Screens style with the
+resolved tokens (the design is token-driven, not utility-class-driven).
 
 ## Rules
 - `app/` holds routes only; put UI in `src/screens` and re-export.
 - Data logic comes from `@repo/core` (api/hooks). Never query Firestore from a screen directly.
 - Platform code goes behind `.native.ts`/`.web.ts`. Keep `@repo/core` pure.
-- Style with NativeWind classes; theme colours (`bg-primary`, `text-ink`) come from CSS vars.
+- Colours come from `useTheme()` tokens so the team takeover + dark/light always apply.
 
 ## Setup before running
-1. `cp .env.example .env` and fill in the Firebase Web config + Google web client id.
-2. Google Sign-In needs a dev build (not Expo Go): `eas build --profile development --platform android`.
+1. `cp .env.example .env` and fill in the Firebase Web config + Google web client id
+   (or set `EXPO_PUBLIC_USE_FIREBASE_EMULATOR=1` for the local emulator suite).
+2. Seed demo data: `pnpm --filter @repo/functions seed` (and `… simulate` for live goals).
+3. Google Sign-In needs a dev build (not Expo Go): `eas build --profile development --platform android`.
 
 ## Commands (from this dir)
 - `pnpm start` / `pnpm android` / `pnpm web`

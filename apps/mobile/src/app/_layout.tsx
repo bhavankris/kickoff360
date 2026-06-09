@@ -1,15 +1,20 @@
 import '../global.css';
 import { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
 import { AppProviders } from '@/providers/AppProviders';
 import { useAuth } from '@/providers/AuthProvider';
+import { useTheme } from '@/providers/ThemeProvider';
+import { FONTS } from '@/theme/fonts';
 
 function RootNavigator() {
   const { status } = useAuth();
+  const { t } = useTheme();
   const segments = useSegments();
   const router = useRouter();
+  const [fontsLoaded] = useFonts(FONTS);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -24,27 +29,29 @@ function RootNavigator() {
     }
   }, [status, segments, router]);
 
-  if (status === 'loading') {
+  if (status === 'loading' || !fontsLoaded) {
     return (
-      <View className="flex-1 items-center justify-center bg-surface">
-        <ActivityIndicator />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: t.bg }}>
+        <ActivityIndicator color={t.brandText} />
       </View>
     );
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(onboarding)" />
-      <Stack.Screen name="(app)" />
-    </Stack>
+    <>
+      <StatusBar style={t.mode === 'light' ? 'dark' : 'light'} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(onboarding)" />
+        <Stack.Screen name="(app)" />
+      </Stack>
+    </>
   );
 }
 
 export default function RootLayout() {
   return (
     <AppProviders>
-      <StatusBar style="auto" />
       <RootNavigator />
     </AppProviders>
   );

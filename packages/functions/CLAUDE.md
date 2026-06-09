@@ -28,3 +28,14 @@ builds `@repo/core` first (functions read its `dist`, not its source).
 - `pnpm serve`    # build + emulators (functions, firestore, auth)
 - `pnpm deploy`   # firebase deploy --only functions
 - `firebase functions:secrets:set API_SPORTS_KEY`
+
+## Demo data (scripts/)
+The app renders the `matches` / `matchDetails` / `scorers` collections.
+Until the API-Sports mapping into those collections is wired up, seed them:
+- `pnpm seed`      writes the WC2026 demo dataset; kick-offs are shifted so
+                   matchday 2 (two live matches) is happening right now.
+                   `--absolute` keeps the real June 2026 dates.
+- `pnpm simulate`  ticks the two live matches forward in real time (goals,
+                   cards, FT) so every open client updates via onSnapshot.
+Both target the emulator when `FIRESTORE_EMULATOR_HOST` is set, otherwise the
+project from `GCLOUD_PROJECT` / `GOOGLE_APPLICATION_CREDENTIALS`.

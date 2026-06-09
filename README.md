@@ -20,6 +20,20 @@ packages/config      Shared tsconfig / eslint / prettier
 platform SDK. Platform code lives in `apps/*` behind `.native.ts` / `.web.ts`
 adapters. An ESLint rule enforces this.
 
+## The app
+
+Onboarding (Google → display name → pick your nation, with the whole app
+re-theming live to your team's colors), then five tabs: **Home** (your team's
+hero match, live now, today's schedule, your group), **Matches** (full
+schedule + filters), **Live** (live hub with countdown + empty state),
+**Groups** (all 12 tables), **Players** (Golden Boot / Top Assists / Golden
+Glove). Every match opens the **Match Centre** — summary timeline, team stats,
+formation pitch with lineups, and venue info. Dark/light mode and a
+subtle/full theme-takeover toggle live in the profile.
+
+Live scores stream from Firestore via `onSnapshot` (bridged into TanStack
+Query), so goals land on every screen in real time.
+
 ## Develop
 
 ```bash
@@ -29,6 +43,10 @@ pnpm build                   # turbo build (core → functions)
 
 cd apps/mobile && pnpm start # Expo dev server
 firebase emulators:start     # local Auth + Firestore + Functions
+
+# Demo data (matches / matchDetails / scorers collections):
+pnpm --filter @repo/functions seed       # WC2026 dataset, matchday 2 live "now"
+pnpm --filter @repo/functions simulate   # real-time goal simulation via Firestore
 ```
 
 ## Manual setup (account-bound — not scaffolded)

@@ -4,9 +4,14 @@ service cloud.firestore {
 
     // Polled collections: any signed-in user can read; only Cloud Functions
     // (Admin SDK, which bypasses rules) may write. Clients can never write.
-    match /fixtures/{id}   { allow read: if request.auth != null; allow write: if false; }
-    match /standings/{id}  { allow read: if request.auth != null; allow write: if false; }
-    match /players/{id}    { allow read: if request.auth != null; allow write: if false; }
+    match /fixtures/{id}     { allow read: if request.auth != null; allow write: if false; }
+    match /standings/{id}    { allow read: if request.auth != null; allow write: if false; }
+    match /players/{id}      { allow read: if request.auth != null; allow write: if false; }
+
+    // Match-centre collections rendered by the app (backend-written).
+    match /matches/{id}      { allow read: if request.auth != null; allow write: if false; }
+    match /matchDetails/{id} { allow read: if request.auth != null; allow write: if false; }
+    match /scorers/{id}      { allow read: if request.auth != null; allow write: if false; }
 
     // Runtime config is server-only.
     match /config/{id}     { allow read: if request.auth != null; allow write: if false; }
