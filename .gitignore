@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Turborepo
+.turbo/
+
+# Build output
+dist/
+lib/
+.next/
+out/
+
+# Expo
+.expo/
+*.tsbuildinfo
+apps/mobile/.expo/
+apps/mobile/dist/
+apps/mobile/web-build/
+apps/mobile/android/
+apps/mobile/ios/
+
+# Native build artifacts / signing
+*.keystore
+!debug.keystore
+apps/mobile/play-service-account.json
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+**/firebase-export-*/
+
+# Environment / secrets
+.env
+.env.local
+.env*.local
+**/.env
+!**/.env.example
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.pem

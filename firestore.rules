@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Polled collections: any signed-in user can read; only Cloud Functions
+    // (Admin SDK, which bypasses rules) may write. Clients can never write.
+    match /fixtures/{id}   { allow read: if request.auth != null; allow write: if false; }
+    match /standings/{id}  { allow read: if request.auth != null; allow write: if false; }
+    match /players/{id}    { allow read: if request.auth != null; allow write: if false; }
+
+    // Runtime config is server-only.
+    match /config/{id}     { allow read: if request.auth != null; allow write: if false; }
+
+    // A user may read and write only their own profile, with validated fields.
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 1
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.countryCode is string
+        && request.resource.data.countryCode.size() == 3
+        && request.resource.data.onboardingComplete is bool;
+    }
+  }
+}

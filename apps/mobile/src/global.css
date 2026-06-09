@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default theme variables (DEFAULT palette). ThemeProvider overrides these per
+   country via NativeWind vars() on mobile; a future web app sets them in :root CSS. */
+:root {
+  --c-primary: 30 64 175;
+  --c-secondary: 241 245 249;
+  --c-accent: 234 179 8;
+  --c-surface: 255 255 255;
+  --c-ink: 17 24 39;
+}

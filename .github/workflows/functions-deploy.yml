@@ -1,0 +1,30 @@
+name: Deploy Functions
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/functions/**'
+      - 'packages/core/**'
+      - 'firestore.rules'
+      - 'firestore.indexes.json'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # --filter builds @repo/core first, then @repo/functions.
+      - run: pnpm turbo run build --filter=@repo/functions
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions,firestore:rules --project ${{ secrets.FIREBASE_PROJECT_ID }}
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

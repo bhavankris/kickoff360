@@ -1,0 +1,35 @@
+{
+  "name": "@repo/core",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "import": "./src/index.ts", "default": "./dist/index.js" },
+    "./types": { "import": "./src/types/index.ts", "default": "./dist/types/index.js" },
+    "./schemas": { "import": "./src/schemas/index.ts", "default": "./dist/schemas/index.js" },
+    "./hooks": { "import": "./src/hooks/index.ts", "default": "./dist/hooks/index.js" },
+    "./api": { "import": "./src/api/index.ts", "default": "./dist/api/index.js" },
+    "./theme": { "import": "./src/theme/index.ts", "default": "./dist/theme/index.js" },
+    "./firebase": { "import": "./src/firebase/index.ts", "default": "./dist/firebase/index.js" }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "firebase": "^12.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "zod": "^3.23.0"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "typescript": "^5.5.0"
+  }
+}
