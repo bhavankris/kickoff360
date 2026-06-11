@@ -1,8 +1,6 @@
 import { Text, View } from 'react-native';
 import { teamFor, type LineupSide, type MatchDoc } from '@repo/core';
 import { ink } from '@repo/core';
-import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Flag, Pill } from './ui';
 
 /** Formation pitch with both XIs + benches (ported from the design's pitch.jsx). */
@@ -35,40 +33,28 @@ function PlayerDot({ code, num, name, x, y }: { code: string; num: string; name:
   const dotInk = team ? ink(team.primary) : '#fff';
   return (
     <View
+      className="absolute w-14 items-center"
       style={{
-        position: 'absolute',
         left: `${x * 100}%`,
         top: `${y * 100}%`,
         transform: [{ translateX: -28 }, { translateY: -20 }],
-        alignItems: 'center',
-        width: 56,
       }}
     >
       <View
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 14,
-          backgroundColor: team?.primary ?? '#333',
-          borderWidth: 2,
-          borderColor: 'rgba(255,255,255,0.7)',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+        className="h-7 w-7 items-center justify-center rounded-full border-2 border-white/70"
+        style={{ backgroundColor: team?.primary ?? '#333' }}
       >
-        <Text style={{ fontSize: 12, color: dotInk, ...f(800) }}>{num}</Text>
+        <Text className="font-archivo-extrabold text-[12px]" style={{ color: dotInk }}>
+          {num}
+        </Text>
       </View>
       <Text
         numberOfLines={1}
+        className="mt-[3px] max-w-[60px] font-archivo-bold text-[9px] text-white"
         style={{
-          marginTop: 3,
-          fontSize: 9,
-          color: '#fff',
           textShadowColor: 'rgba(0,0,0,0.9)',
           textShadowOffset: { width: 0, height: 1 },
           textShadowRadius: 3,
-          maxWidth: 60,
-          ...f(700),
         }}
       >
         {name.split(' ').slice(-1)[0]}
@@ -86,90 +72,48 @@ export function PitchLineup({
   match: MatchDoc;
   lineups: { home: LineupSide; away: LineupSide };
 }) {
-  const { t } = useTheme();
   const { home, away } = lineups;
   const hp = positionsFromFormation(home.formation);
   const ap = positionsFromFormation(away.formation);
   return (
-    <View style={{ borderRadius: 18, overflow: 'hidden', borderWidth: 1, borderColor: t.line }}>
+    <View className="overflow-hidden rounded-[18px] border border-line">
       {/* formation header */}
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingVertical: 12,
-          paddingHorizontal: 16,
-          backgroundColor: t.surface,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <View className="flex-row justify-between bg-surface px-4 py-3">
+        <View className="flex-row items-center gap-2">
           <Flag code={match.home} size={22} />
-          <Text style={{ fontSize: 13, color: t.text, ...f(800) }}>{match.home}</Text>
+          <Text className="font-archivo-extrabold text-[13px] text-ink">{match.home}</Text>
           <Pill fs={10}>{home.formation}</Pill>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View className="flex-row items-center gap-2">
           <Pill fs={10}>{away.formation}</Pill>
-          <Text style={{ fontSize: 13, color: t.text, ...f(800) }}>{match.away}</Text>
+          <Text className="font-archivo-extrabold text-[13px] text-ink">{match.away}</Text>
           <Flag code={match.away} size={22} />
         </View>
       </View>
-      {/* pitch */}
-      <View style={{ height: 460, backgroundColor: '#1f7a44' }}>
+      {/* pitch (fixed grass green — not themed) */}
+      <View className="h-[460px] bg-[#1f7a44]">
         {/* stripes */}
         {Array.from({ length: 8 }).map((_, i) => (
           <View
             key={i}
-            style={{
-              position: 'absolute',
-              top: `${i * 12.5}%`,
-              left: 0,
-              right: 0,
-              height: '12.5%',
-              backgroundColor: i % 2 ? 'rgba(255,255,255,0.04)' : 'transparent',
-            }}
+            className={`absolute left-0 right-0 h-[12.5%] ${i % 2 ? 'bg-white/[0.04]' : 'bg-transparent'}`}
+            style={{ top: `${i * 12.5}%` }}
           />
         ))}
         {/* markings */}
-        <View style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, borderWidth: 1.5, borderColor: LINE, borderRadius: 4 }} />
-        <View style={{ position: 'absolute', top: '50%', left: 8, right: 8, height: 1.5, backgroundColor: LINE }} />
+        <View className="absolute bottom-2 left-2 right-2 top-2 rounded border-[1.5px]" style={{ borderColor: LINE }} />
+        <View className="absolute left-2 right-2 top-1/2 h-[1.5px]" style={{ backgroundColor: LINE }} />
         <View
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: 76,
-            height: 76,
-            borderRadius: 38,
-            borderWidth: 1.5,
-            borderColor: LINE,
-            transform: [{ translateX: -38 }, { translateY: -38 }],
-          }}
+          className="absolute left-1/2 top-1/2 h-[76px] w-[76px] rounded-full border-[1.5px]"
+          style={{ borderColor: LINE, transform: [{ translateX: -38 }, { translateY: -38 }] }}
         />
         <View
-          style={{
-            position: 'absolute',
-            top: 8,
-            left: '50%',
-            width: 130,
-            height: 56,
-            borderWidth: 1.5,
-            borderTopWidth: 0,
-            borderColor: LINE,
-            transform: [{ translateX: -65 }],
-          }}
+          className="absolute left-1/2 top-2 h-14 w-[130px] border-[1.5px] border-t-0"
+          style={{ borderColor: LINE, transform: [{ translateX: -65 }] }}
         />
         <View
-          style={{
-            position: 'absolute',
-            bottom: 8,
-            left: '50%',
-            width: 130,
-            height: 56,
-            borderWidth: 1.5,
-            borderBottomWidth: 0,
-            borderColor: LINE,
-            transform: [{ translateX: -65 }],
-          }}
+          className="absolute bottom-2 left-1/2 h-14 w-[130px] border-[1.5px] border-b-0"
+          style={{ borderColor: LINE, transform: [{ translateX: -65 }] }}
         />
         {/* away (top, attacking down) */}
         {away.xi.map((p, i) => (
@@ -181,23 +125,14 @@ export function PitchLineup({
         ))}
       </View>
       {/* benches */}
-      <View style={{ flexDirection: 'row', backgroundColor: t.surface }}>
+      <View className="flex-row bg-surface">
         {[home, away].map((sq, idx) => (
-          <View
-            key={idx}
-            style={{
-              flex: 1,
-              paddingVertical: 12,
-              paddingHorizontal: 14,
-              borderRightWidth: idx === 0 ? 1 : 0,
-              borderRightColor: t.line,
-            }}
-          >
-            <Text style={{ fontSize: 10, color: t.faint, letterSpacing: 0.6, marginBottom: 8, ...mono(700) }}>
+          <View key={idx} className={`flex-1 px-3.5 py-3 ${idx === 0 ? 'border-r border-r-line' : ''}`}>
+            <Text className="mb-2 font-mono-bold text-[10px] tracking-[0.6px] text-faint">
               BENCH · {idx === 0 ? match.home : match.away}
             </Text>
             {sq.bench.map((b) => (
-              <Text key={b} style={{ fontSize: 12, color: t.muted, paddingVertical: 3, ...f(500) }}>
+              <Text key={b} className="py-[3px] font-archivo-medium text-[12px] text-muted">
                 {b}
               </Text>
             ))}

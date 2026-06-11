@@ -11,7 +11,6 @@ import {
 import Svg, { Path } from 'react-native-svg';
 import { teamFor } from '@repo/core';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 
 /** kickoff360 shared UI kit — icons, flag chips, atoms (ported from the design). */
 
@@ -57,6 +56,7 @@ export function Icon({
   sw?: number;
   fill?: string;
 }) {
+  // SVG strokes need raw color strings — className can't reach Svg props.
   const { t } = useTheme();
   const d = ICON_PATHS[name] ?? '';
   return (
@@ -94,26 +94,22 @@ export function Flag({
   const team = teamFor(code);
   const r = radius ?? Math.round(size * 0.26);
   if (!team) {
-    return <View style={[{ width: size, height: size, borderRadius: r, backgroundColor: '#222' }, style]} />;
+    return (
+      <View
+        className="bg-[#222222]"
+        style={[{ width: size, height: size, borderRadius: r }, style]}
+      />
+    );
   }
   return (
     <View
-      style={[
-        {
-          width: size,
-          height: size,
-          borderRadius: r,
-          overflow: 'hidden',
-          flexDirection: team.dir === 'h' ? 'column' : 'row',
-          borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.18)',
-          flexShrink: 0,
-        },
-        style,
-      ]}
+      className={`shrink-0 overflow-hidden border border-white/[0.18] ${
+        team.dir === 'h' ? 'flex-col' : 'flex-row'
+      }`}
+      style={[{ width: size, height: size, borderRadius: r }, style]}
     >
       {team.bands.map((c, i) => (
-        <View key={i} style={{ flex: 1, backgroundColor: c }} />
+        <View key={i} className="flex-1" style={{ backgroundColor: c }} />
       ))}
     </View>
   );
@@ -122,51 +118,38 @@ export function Flag({
 // ── Pill / badge ──────────────────────────────────────────────────
 export function Pill({
   children,
-  color,
-  bg,
-  borderColor,
+  className,
+  textClassName,
   fs = 11,
   style,
   monoFont = true,
   icon,
 }: {
   children: ReactNode;
-  color?: string;
-  bg?: string;
-  borderColor?: string;
+  /** Container classes (background/border variant). Defaults to `bg-surface2`. */
+  className?: string;
+  /** Text color class. Defaults to `text-muted`. */
+  textClassName?: string;
   fs?: number;
   style?: StyleProp<ViewStyle>;
   monoFont?: boolean;
   icon?: ReactNode;
 }) {
-  const { t } = useTheme();
   return (
     <View
-      style={[
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 5,
-          paddingVertical: 3,
-          paddingHorizontal: 8,
-          borderRadius: 100,
-          backgroundColor: bg ?? t.surface2,
-          borderWidth: borderColor ? 1 : 0,
-          borderColor,
-          alignSelf: 'flex-start',
-        },
-        style,
-      ]}
+      className={`flex-row items-center gap-[5px] self-start rounded-full px-2 py-[3px] ${
+        className ?? 'bg-surface2'
+      }`}
+      style={style}
     >
       {icon}
       <Text
-        style={{
-          color: color ?? t.muted,
-          fontSize: fs,
-          letterSpacing: monoFont ? 0.6 : 0.2,
-          textTransform: monoFont ? 'uppercase' : 'none',
-          ...(monoFont ? mono(700) : f(700)),
-        }}
+        className={`${
+          monoFont
+            ? 'font-mono-bold uppercase tracking-[0.6px]'
+            : 'font-archivo-bold tracking-[0.2px]'
+        } ${textClassName ?? 'text-muted'}`}
+        style={{ fontSize: fs }}
       >
         {children}
       </Text>
@@ -175,6 +158,7 @@ export function Pill({
 }
 
 export function LiveDot({ size = 7, color }: { size?: number; color?: string }) {
+  // Animated opacity + raw color — stays a style object by necessity.
   const { t } = useTheme();
   const [pulse] = useState(() => new Animated.Value(1));
   useEffect(() => {
@@ -214,27 +198,39 @@ export function StatBar({
   suffix?: string;
   invert?: boolean;
 }) {
-  const { t } = useTheme();
   const total = a + b || 1;
   const ap = (a / total) * 100;
   const aWin = invert ? a < b : a > b;
   const bWin = invert ? b < a : b > a;
   return (
-    <View style={{ marginBottom: 14 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 7 }}>
-        <Text style={{ fontSize: 15, color: aWin ? t.text : t.muted, fontVariant: ['tabular-nums'], ...f(800) }}>
+    <View className="mb-3.5">
+      <View className="mb-[7px] flex-row items-baseline justify-between">
+        {/* fontVariant inline: NativeWind doesn't compile font-variant-numeric */}
+        <Text
+          className={`font-archivo-extrabold text-[15px] ${aWin ? 'text-ink' : 'text-muted'}`}
+          style={{ fontVariant: ['tabular-nums'] }}
+        >
           {a}{suffix}
         </Text>
-        <Text style={{ fontSize: 11, color: t.faint, textTransform: 'uppercase', letterSpacing: 0.8, ...mono(700) }}>
+        <Text className="font-mono-bold text-[11px] uppercase tracking-[0.8px] text-faint">
           {label}
         </Text>
-        <Text style={{ fontSize: 15, color: bWin ? t.text : t.muted, fontVariant: ['tabular-nums'], ...f(800) }}>
+        <Text
+          className={`font-archivo-extrabold text-[15px] ${bWin ? 'text-ink' : 'text-muted'}`}
+          style={{ fontVariant: ['tabular-nums'] }}
+        >
           {b}{suffix}
         </Text>
       </View>
-      <View style={{ flexDirection: 'row', gap: 4, height: 6 }}>
-        <View style={{ flex: ap, borderRadius: 3, backgroundColor: t.brandText, opacity: aWin ? 1 : 0.5 }} />
-        <View style={{ flex: 100 - ap, borderRadius: 3, backgroundColor: t.accentText, opacity: bWin ? 1 : 0.5 }} />
+      <View className="h-1.5 flex-row gap-1">
+        <View
+          className={`rounded-[3px] bg-brand-text ${aWin ? '' : 'opacity-50'}`}
+          style={{ flex: ap }}
+        />
+        <View
+          className={`rounded-[3px] bg-accent-text ${bWin ? '' : 'opacity-50'}`}
+          style={{ flex: 100 - ap }}
+        />
       </View>
     </View>
   );
@@ -252,22 +248,19 @@ export function Card({
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 }) {
-  const { t } = useTheme();
-  const base: ViewStyle = {
-    backgroundColor: t.surface,
-    borderRadius: 18,
-    padding: pad,
-    borderWidth: 1,
-    borderColor: t.line,
-  };
+  const base = 'rounded-[18px] border border-line bg-surface';
   if (onPress) {
     return (
-      <Pressable onPress={onPress} style={[base, style]}>
+      <Pressable onPress={onPress} className={base} style={[{ padding: pad }, style]}>
         {children}
       </Pressable>
     );
   }
-  return <View style={[base, style]}>{children}</View>;
+  return (
+    <View className={base} style={[{ padding: pad }, style]}>
+      {children}
+    </View>
+  );
 }
 
 export function SectionTitle({
@@ -281,22 +274,13 @@ export function SectionTitle({
 }) {
   const { t } = useTheme();
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 4,
-        marginBottom: 12,
-        marginHorizontal: 2,
-      }}
-    >
-      <Text style={{ fontSize: 13, letterSpacing: 1.4, textTransform: 'uppercase', color: t.muted, ...mono(700) }}>
+    <View className="mx-0.5 mb-3 mt-1 flex-row items-center justify-between">
+      <Text className="font-mono-bold text-[13px] uppercase tracking-[1.4px] text-muted">
         {children}
       </Text>
       {action ? (
-        <Pressable onPress={onAction} style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-          <Text style={{ color: t.brandText, fontSize: 12.5, ...f(700) }}>{action}</Text>
+        <Pressable onPress={onAction} className="flex-row items-center gap-0.5">
+          <Text className="font-archivo-bold text-[12.5px] text-brand-text">{action}</Text>
           <Icon name="chevron" size={14} sw={2.4} color={t.brandText} />
         </Pressable>
       ) : null}
@@ -306,41 +290,16 @@ export function SectionTitle({
 
 // ── Media placeholder (map slot etc.) ─────────────────────────────
 export function MediaSlot({ label, h = 150, radius = 16 }: { label?: string; h?: number; radius?: number }) {
-  const { t } = useTheme();
   return (
     <View
-      style={{
-        height: h,
-        borderRadius: radius,
-        overflow: 'hidden',
-        backgroundColor: t.surface2,
-        borderWidth: 1,
-        borderColor: t.line,
-        justifyContent: 'flex-end',
-      }}
+      className="justify-end overflow-hidden border border-line bg-surface2"
+      style={{ height: h, borderRadius: radius }}
     >
       {label ? (
-        <Text
-          style={{
-            position: 'absolute',
-            top: 10,
-            left: 12,
-            fontSize: 10.5,
-            color: t.faint,
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            backgroundColor: 'rgba(0,0,0,0.35)',
-            paddingVertical: 3,
-            paddingHorizontal: 7,
-            borderRadius: 6,
-            overflow: 'hidden',
-            ...mono(400),
-          }}
-        >
+        <Text className="absolute left-3 top-2.5 overflow-hidden rounded-md bg-black/35 px-[7px] py-[3px] font-mono text-[10.5px] uppercase tracking-[0.4px] text-faint">
           {label}
         </Text>
       ) : null}
     </View>
   );
 }
-

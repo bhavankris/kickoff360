@@ -2,7 +2,6 @@ import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMatches } from '@repo/core';
 import { useTheme } from '../providers/ThemeProvider';
-import { f } from '../theme/fonts';
 import { Icon } from './ui';
 
 /**
@@ -34,17 +33,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
   return (
     <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'space-around',
-        paddingTop: 8,
-        paddingHorizontal: 10,
-        paddingBottom: insets.bottom + 8,
-        backgroundColor: t.surface,
-        borderTopWidth: 1,
-        borderTopColor: t.line,
-      }}
+      className="flex-row items-end justify-around border-t border-t-line bg-surface px-2.5 pt-2"
+      style={{ paddingBottom: insets.bottom + 8 }}
     >
       {state.routes.map((route, index) => {
         const item = ITEMS[route.name];
@@ -57,50 +47,24 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
         if (item.center) {
           return (
-            <Pressable key={route.key} onPress={onPress} style={{ alignItems: 'center', gap: 5, marginTop: -26 }}>
-              <View
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 20,
-                  backgroundColor: t.live,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+            <Pressable key={route.key} onPress={onPress} className="-mt-[26px] items-center gap-[5px]">
+              <View className="h-14 w-14 items-center justify-center rounded-[20px] bg-live">
                 <Icon name="flame" size={26} color="#fff" fill="rgba(255,255,255,0.18)" sw={2} />
                 {liveCount > 0 ? (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: -3,
-                      right: -3,
-                      minWidth: 19,
-                      height: 19,
-                      paddingHorizontal: 5,
-                      borderRadius: 10,
-                      backgroundColor: '#fff',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: 2,
-                      borderColor: t.surface,
-                    }}
-                  >
-                    <Text style={{ color: t.live, fontSize: 11, ...f(800) }}>{liveCount}</Text>
+                  <View className="absolute -right-[3px] -top-[3px] h-[19px] min-w-[19px] items-center justify-center rounded-[10px] border-2 border-surface bg-white px-[5px]">
+                    <Text className="font-archivo-extrabold text-[11px] text-live">{liveCount}</Text>
                   </View>
                 ) : null}
               </View>
-              <Text style={{ fontSize: 10, color: t.live, letterSpacing: 0.2, ...f(800) }}>{item.label}</Text>
+              <Text className="font-archivo-extrabold text-[10px] tracking-[0.2px] text-live">
+                {item.label}
+              </Text>
             </Pressable>
           );
         }
 
         return (
-          <Pressable
-            key={route.key}
-            onPress={onPress}
-            style={{ alignItems: 'center', gap: 5, paddingVertical: 2, paddingHorizontal: 6, width: 64 }}
-          >
+          <Pressable key={route.key} onPress={onPress} className="w-16 items-center gap-[5px] px-1.5 py-0.5">
             <Icon
               name={item.icon}
               size={23}
@@ -108,7 +72,11 @@ export function TabBar({ state, navigation }: TabBarProps) {
               sw={active ? 2.2 : 1.9}
               fill={active ? t.brandSoft : 'none'}
             />
-            <Text style={{ fontSize: 10, color: active ? t.brandText : t.faint, letterSpacing: 0.1, ...f(active ? 800 : 600) }}>
+            <Text
+              className={`text-[10px] tracking-[0.1px] ${
+                active ? 'font-archivo-extrabold text-brand-text' : 'font-archivo-semibold text-faint'
+              }`}
+            >
               {item.label}
             </Text>
           </Pressable>

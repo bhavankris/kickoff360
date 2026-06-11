@@ -19,17 +19,25 @@ Expo SDK 56 + Expo Router 56 + NativeWind v4. Consumes `@repo/core` for all data
 - `src/theme/`      fonts.ts — Archivo/Space Mono loading + `f()`/`mono()` weight helpers
 - `src/store/`      Zustand — UI state ONLY (prefs: mode, intensity, onboarding preview team)
 
-## Theming
+## Theming (NativeWind)
 `ThemeProvider` resolves `computeTheme(countryCode, { mode, intensity })` from core and
-exposes tokens via `useTheme()`. The favourite team comes from the Firestore profile;
-during onboarding `prefs.previewTeam` drives the live re-theme. Screens style with the
-resolved tokens (the design is token-driven, not utility-class-driven).
+publishes every token as a CSS variable via NativeWind `vars()` (`--c-surface`, `--c-text`, …).
+`tailwind.config.js` maps those vars to semantic colors, so screens style with utility
+classes — `bg-surface`, `text-ink`, `border-line`, `text-brand-text` — and the whole app
+re-tints when the favourite team / mode / intensity changes. The favourite team comes from
+the Firestore profile; during onboarding `prefs.previewTeam` drives the live re-theme.
+Reach for `useTheme().t` (raw token strings) only where className can't: SVG props,
+gradient stops, ActivityIndicator/StatusBar, Animated values. Fonts map to classes too
+(`font-archivo-extrabold`, `font-mono-bold`); `fontVariant: ['tabular-nums']` stays inline
+(NativeWind doesn't compile font-variant-numeric).
 
 ## Rules
 - `app/` holds routes only; put UI in `src/screens` and re-export.
 - Data logic comes from `@repo/core` (api/hooks). Never query Firestore from a screen directly.
 - Platform code goes behind `.native.ts`/`.web.ts`. Keep `@repo/core` pure.
-- Colours come from `useTheme()` tokens so the team takeover + dark/light always apply.
+- Style with NativeWind `className` utilities; colours come from the theme-token classes
+  (`bg-canvas`, `bg-surface`, `text-ink`, `text-brand-text`, …) so the team takeover +
+  dark/light always apply. Inline `style` is reserved for runtime-computed values.
 
 ## Setup before running
 1. `cp .env.example .env` and fill in the Firebase Web config + Google web client id

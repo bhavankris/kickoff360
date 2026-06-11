@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { teamFor, timeLabel, dayShort, type MatchDoc } from '@repo/core';
-import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Flag, LiveDot, Pill } from './ui';
 
 /** Shared match cards/rows (ported from the design's matchui). */
@@ -36,7 +34,6 @@ export function MatchRow({
   onOpen: (id: string) => void;
   showGroup?: boolean;
 }) {
-  const { t } = useTheme();
   const live = m.status === 'live';
   const fin = m.status === 'final';
   const sc = m.score;
@@ -44,23 +41,21 @@ export function MatchRow({
   const aWin = fin && sc ? sc.away > sc.home : false;
 
   const teamLine = (code: string, score: number | null, win: boolean) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+    <View className="flex-row items-center gap-2.5">
       <Flag code={code} size={24} />
       <Text
         numberOfLines={1}
-        style={{ flex: 1, fontSize: 15, color: fin && !win ? t.muted : t.text, ...f(win ? 800 : 600) }}
+        className={`flex-1 text-[15px] ${
+          win ? 'font-archivo-extrabold' : 'font-archivo-semibold'
+        } ${fin && !win ? 'text-muted' : 'text-ink'}`}
       >
         {teamFor(code)?.name ?? code}
       </Text>
       <Text
-        style={{
-          fontSize: 17,
-          minWidth: 16,
-          textAlign: 'right',
-          fontVariant: ['tabular-nums'],
-          color: score == null ? t.faint : fin && !win ? t.muted : t.text,
-          ...f(800),
-        }}
+        className={`min-w-4 text-right font-archivo-extrabold text-[17px] ${
+          score == null ? 'text-faint' : fin && !win ? 'text-muted' : 'text-ink'
+        }`}
+        style={{ fontVariant: ['tabular-nums'] }}
       >
         {score == null ? '–' : score}
       </Text>
@@ -70,57 +65,40 @@ export function MatchRow({
   return (
     <Pressable
       onPress={() => onOpen(m.matchId)}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'stretch',
-        gap: 12,
-        paddingVertical: 12,
-        paddingHorizontal: 14,
-        backgroundColor: t.surface,
-        borderRadius: 14,
-        borderWidth: 1,
-        borderColor: t.line,
-      }}
+      className="flex-row items-stretch gap-3 rounded-[14px] border border-line bg-surface px-3.5 py-3"
     >
-      <View
-        style={{
-          width: 52,
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 3,
-          borderRightWidth: 1,
-          borderRightColor: t.line,
-          paddingRight: 12,
-        }}
-      >
+      <View className="w-[52px] items-center justify-center gap-[3px] border-r border-r-line pr-3">
         {live ? (
           <>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <View className="flex-row items-center gap-1">
               <LiveDot size={6} />
-              <Text style={{ fontSize: 10, color: t.live, ...mono(700) }}>LIVE</Text>
+              <Text className="font-mono-bold text-[10px] text-live">LIVE</Text>
             </View>
-            <Text style={{ fontSize: 13, color: t.live, ...mono(700) }}>{m.minute}&apos;</Text>
+            <Text className="font-mono-bold text-[13px] text-live">{m.minute}&apos;</Text>
           </>
         ) : fin ? (
-          <Text style={{ fontSize: 11, color: t.muted, ...mono(700) }}>FT</Text>
+          <Text className="font-mono-bold text-[11px] text-muted">FT</Text>
         ) : (
           <>
-            <Text style={{ fontSize: 12, color: t.text, fontVariant: ['tabular-nums'], ...f(800) }}>
+            <Text
+              className="font-archivo-extrabold text-[12px] text-ink"
+              style={{ fontVariant: ['tabular-nums'] }}
+            >
               {timeLabel(m.kickoff).replace(' ', '')}
             </Text>
-            <Text style={{ fontSize: 9.5, color: t.faint, ...mono(700) }}>
+            <Text className="font-mono-bold text-[9.5px] text-faint">
               {dayShort(m.kickoff).dow.toUpperCase()}
             </Text>
           </>
         )}
       </View>
-      <View style={{ flex: 1, gap: 9, justifyContent: 'center', minWidth: 0 }}>
+      <View className="min-w-0 flex-1 justify-center gap-[9px]">
         {teamLine(m.home, sc ? sc.home : null, hWin)}
         {teamLine(m.away, sc ? sc.away : null, aWin)}
       </View>
       {showGroup ? (
-        <View style={{ justifyContent: 'center' }}>
-          <Pill fs={10} color={t.faint}>{m.group}</Pill>
+        <View className="justify-center">
+          <Pill fs={10} textClassName="text-faint">{m.group}</Pill>
         </View>
       ) : null}
     </Pressable>
@@ -129,49 +107,31 @@ export function MatchRow({
 
 // horizontally-scrollable compact live chip
 export function LiveChip({ match: m, onOpen }: { match: MatchDoc; onOpen: (id: string) => void }) {
-  const { t } = useTheme();
   const flashing = useGoalFlash(m.lastGoal);
   const flashFor = (code: string) => flashing && m.lastGoal?.team === code;
   return (
     <Pressable
       onPress={() => onOpen(m.matchId)}
-      style={{
-        minWidth: 184,
-        padding: 14,
-        borderRadius: 16,
-        backgroundColor: t.surface,
-        borderWidth: 1,
-        borderColor: t.line,
-        overflow: 'hidden',
-      }}
+      className="min-w-[184px] overflow-hidden rounded-2xl border border-line bg-surface p-3.5"
     >
-      <View style={{ position: 'absolute', top: 0, left: 0, width: 3, height: 999, backgroundColor: t.live }} />
-      <View
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+      <View className="absolute left-0 top-0 h-[999px] w-[3px] bg-live" />
+      <View className="mb-3 flex-row items-center justify-between">
+        <View className="flex-row items-center gap-[5px]">
           <LiveDot size={6} />
-          <Text style={{ fontSize: 10, color: t.live, ...mono(700) }}>{m.minute}&apos;</Text>
+          <Text className="font-mono-bold text-[10px] text-live">{m.minute}&apos;</Text>
         </View>
-        <Pill fs={9.5} color={t.faint}>GRP {m.group}</Pill>
+        <Pill fs={9.5} textClassName="text-faint">GRP {m.group}</Pill>
       </View>
       {[
         { code: m.home, s: m.score?.home ?? 0 },
         { code: m.away, s: m.score?.away ?? 0 },
       ].map(({ code, s }, i) => (
-        <View
-          key={code}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: i === 0 ? 8 : 0 }}
-        >
+        <View key={code} className={`flex-row items-center gap-2 ${i === 0 ? 'mb-2' : ''}`}>
           <Flag code={code} size={22} />
-          <Text style={{ flex: 1, fontSize: 13.5, color: t.text, ...f(700) }}>{code}</Text>
+          <Text className="flex-1 font-archivo-bold text-[13.5px] text-ink">{code}</Text>
           <Text
-            style={{
-              fontSize: 17,
-              color: flashFor(code) ? t.live : t.text,
-              fontVariant: ['tabular-nums'],
-              ...f(800),
-            }}
+            className={`font-archivo-extrabold text-[17px] ${flashFor(code) ? 'text-live' : 'text-ink'}`}
+            style={{ fontVariant: ['tabular-nums'] }}
           >
             {s}
           </Text>
