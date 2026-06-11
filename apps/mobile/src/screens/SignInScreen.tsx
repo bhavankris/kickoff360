@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Line, Path, Rect } from 'react-native-svg';
 import { authAdapter } from '../platform/signIn';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Icon } from '../components/ui';
 
 function GoogleG({ size = 20 }: { size?: number }) {
@@ -51,79 +50,52 @@ export function SignInScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
-      <View style={{ position: 'absolute', top: -40, left: 0, right: 0, height: 460, opacity: 0.5 }}>
+    <View className="flex-1 bg-canvas">
+      <View className="absolute -top-10 left-0 right-0 h-[460px] opacity-50">
         <PitchLines stroke={t.line2} />
       </View>
 
-      <View style={{ flex: 1, justifyContent: 'flex-end', paddingHorizontal: 30, paddingBottom: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, marginBottom: 22 }}>
-          <View
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              backgroundColor: t.brand,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+      <View className="flex-1 justify-end px-[30px] pb-4">
+        <View className="mb-[22px] flex-row items-center gap-[9px]">
+          <View className="h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-brand">
             <Icon name="flame" size={20} color={t.brandInk} fill={t.brandInk} sw={1.6} />
           </View>
-          <Text style={{ fontSize: 13, letterSpacing: 2, color: t.text, textTransform: 'uppercase', ...mono(700) }}>
-            kickoff<Text style={{ color: t.brandText }}>360</Text>
+          <Text className="font-mono-bold text-[13px] uppercase tracking-[2px] text-ink">
+            kickoff<Text className="text-brand-text">360</Text>
           </Text>
         </View>
-        <Text style={{ fontSize: 46, lineHeight: 47, letterSpacing: -1.5, color: t.text, marginBottom: 14, ...f(800) }}>
+        <Text className="mb-3.5 font-archivo-extrabold text-[46px] leading-[47px] tracking-[-1.5px] text-ink">
           Your World Cup,{'\n'}
-          <Text style={{ color: t.brandText }}>your colors.</Text>
+          <Text className="text-brand-text">your colors.</Text>
         </Text>
-        <Text style={{ fontSize: 16, color: t.muted, marginBottom: 4, maxWidth: 320, lineHeight: 23, ...f(400) }}>
+        <Text className="mb-1 max-w-[320px] font-archivo text-[16px] leading-[23px] text-muted">
           Live scores, lineups, group tables and golden-boot races — for all 48 nations, themed to the team you
           bleed for.
         </Text>
       </View>
 
-      <View style={{ paddingHorizontal: 24, paddingTop: 14, paddingBottom: insets.bottom + 28 }}>
+      <View className="px-6 pt-3.5" style={{ paddingBottom: insets.bottom + 28 }}>
         <Pressable
           onPress={onSignIn}
           disabled={busy}
-          style={{
-            height: 56,
-            borderRadius: 16,
-            backgroundColor: '#fff',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 12,
-          }}
+          className="h-14 flex-row items-center justify-center gap-3 rounded-2xl bg-white"
         >
           {busy ? (
             <>
               <ActivityIndicator color="#1f1f1f" />
-              <Text style={{ color: '#1f1f1f', fontSize: 16, ...f(700) }}>Signing in…</Text>
+              <Text className="font-archivo-bold text-[16px] text-[#1f1f1f]">Signing in…</Text>
             </>
           ) : (
             <>
               <GoogleG size={20} />
-              <Text style={{ color: '#1f1f1f', fontSize: 16, ...f(700) }}>Continue with Google</Text>
+              <Text className="font-archivo-bold text-[16px] text-[#1f1f1f]">Continue with Google</Text>
             </>
           )}
         </Pressable>
         {error ? (
-          <Text style={{ marginTop: 12, textAlign: 'center', color: t.live, fontSize: 13, ...f(600) }}>{error}</Text>
+          <Text className="mt-3 text-center font-archivo-semibold text-[13px] text-live">{error}</Text>
         ) : null}
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 11.5,
-            color: t.faint,
-            marginTop: 16,
-            lineHeight: 17,
-            letterSpacing: 0.2,
-            ...mono(400),
-          }}
-        >
+        <Text className="mt-4 text-center font-mono text-[11.5px] leading-[17px] tracking-[0.2px] text-faint">
           48 NATIONS · 104 MATCHES · 16 STADIUMS{'\n'}By continuing you agree to the Terms & Privacy Policy
         </Text>
       </View>

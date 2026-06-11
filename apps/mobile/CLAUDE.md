@@ -16,7 +16,7 @@ Expo SDK 56 + Expo Router 56 + NativeWind v4. Consumes `@repo/core` for all data
 - `src/platform/`   `.native.ts` / `.web.ts` adapters (Google Sign-In). Contract in signIn.ts.
 - `src/lib/`        firebase.ts/.native.ts (auth persistence per platform, emulator wiring),
                     env.ts (EXPO_PUBLIC_*)
-- `src/theme/`      fonts.ts — Archivo/Space Mono loading + `f()`/`mono()` weight helpers
+- `src/theme/`      fonts.ts — Archivo/Space Mono loading (styled via `font-archivo-*` classes)
 - `src/store/`      Zustand — UI state ONLY (prefs: mode, intensity, onboarding preview team)
 
 ## Theming (NativeWind)

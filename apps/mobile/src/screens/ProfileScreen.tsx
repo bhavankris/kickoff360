@@ -7,7 +7,6 @@ import { authAdapter } from '../platform/signIn';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
 import { usePrefs } from '../store/prefs';
-import { f, mono } from '../theme/fonts';
 import { Card, Flag, Icon, SectionTitle } from '../components/ui';
 import { HeaderGradient } from '../components/HeaderGradient';
 
@@ -27,26 +26,16 @@ function TeamPicker({ current, onPick, onClose }: { current: string; onPick: (c:
     return (
       <Pressable
         onPress={() => onPick(tm.code)}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          paddingVertical: 11,
-          paddingHorizontal: 12,
-          borderRadius: 14,
-          backgroundColor: sel ? t.brandSoft : t.surface,
-          borderWidth: 1.5,
-          borderColor: sel ? t.brandText : t.line,
-          margin: 5,
-        }}
+        className={`m-[5px] flex-1 flex-row items-center gap-2.5 rounded-[14px] border-[1.5px] px-3 py-[11px] ${
+          sel ? 'border-brand-text bg-brand-soft' : 'border-line bg-surface'
+        }`}
       >
         <Flag code={tm.code} size={30} />
-        <View style={{ minWidth: 0, flex: 1 }}>
-          <Text numberOfLines={1} style={{ fontSize: 14, color: t.text, ...f(700) }}>
+        <View className="min-w-0 flex-1">
+          <Text numberOfLines={1} className="font-archivo-bold text-[14px] text-ink">
             {tm.name}
           </Text>
-          <Text style={{ fontSize: 11, color: t.faint, ...mono(400) }}>GROUP {tm.group}</Text>
+          <Text className="font-mono text-[11px] text-faint">GROUP {tm.group}</Text>
         </View>
         {sel ? <Icon name="check" size={17} color={t.brandText} sw={2.8} /> : null}
       </Pressable>
@@ -54,46 +43,25 @@ function TeamPicker({ current, onPick, onClose }: { current: string; onPick: (c:
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
+    <View className="flex-1 bg-canvas">
       <HeaderGradient style={{ paddingTop: insets.top + 12, paddingHorizontal: 20, paddingBottom: 14 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+        <View className="mb-3.5 flex-row items-center gap-3">
           <Pressable
             onPress={onClose}
-            style={{
-              backgroundColor: t.surface,
-              borderWidth: 1,
-              borderColor: t.line,
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="h-10 w-10 items-center justify-center rounded-xl border border-line bg-surface"
           >
             <Icon name="back" size={20} color={t.text} />
           </Pressable>
-          <Text style={{ fontSize: 21, color: t.text, ...f(800) }}>Change your team</Text>
+          <Text className="font-archivo-extrabold text-[21px] text-ink">Change your team</Text>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-            backgroundColor: t.surface,
-            borderWidth: 1,
-            borderColor: t.line,
-            borderRadius: 14,
-            paddingHorizontal: 14,
-            height: 46,
-          }}
-        >
+        <View className="h-[46px] flex-row items-center gap-2.5 rounded-[14px] border border-line bg-surface px-3.5">
           <Icon name="search" size={18} color={t.faint} />
           <TextInput
             value={q}
             onChangeText={setQ}
             placeholder="Search 48 teams"
             placeholderTextColor={t.faint}
-            style={{ flex: 1, color: t.text, fontSize: 15, ...f(500) }}
+            className="flex-1 font-archivo-medium text-[15px] text-ink"
           />
         </View>
       </HeaderGradient>
@@ -102,7 +70,7 @@ function TeamPicker({ current, onPick, onClose }: { current: string; onPick: (c:
         numColumns={2}
         keyExtractor={(tm) => tm.code}
         renderItem={renderTeam}
-        contentContainerStyle={{ paddingHorizontal: 13, paddingVertical: 9 }}
+        contentContainerClassName="px-[13px] py-[9px]"
       />
     </View>
   );
@@ -123,26 +91,14 @@ function ToggleRow({
 }) {
   const { t } = useTheme();
   return (
-    <Pressable onPress={onToggle} style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 13, paddingHorizontal: 4 }}>
+    <Pressable onPress={onToggle} className="flex-row items-center gap-[13px] px-1 py-[13px]">
       <Icon name={icon} size={20} color={t.muted} />
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 14.5, color: t.text, ...f(600) }}>{label}</Text>
-        {sub ? <Text style={{ fontSize: 11.5, color: t.faint, ...f(400) }}>{sub}</Text> : null}
+      <View className="flex-1">
+        <Text className="font-archivo-semibold text-[14.5px] text-ink">{label}</Text>
+        {sub ? <Text className="font-archivo text-[11.5px] text-faint">{sub}</Text> : null}
       </View>
-      <View
-        style={{ width: 44, height: 26, borderRadius: 100, backgroundColor: on ? t.brand : t.surface3 }}
-      >
-        <View
-          style={{
-            position: 'absolute',
-            top: 3,
-            left: on ? 21 : 3,
-            width: 20,
-            height: 20,
-            borderRadius: 10,
-            backgroundColor: '#fff',
-          }}
-        />
+      <View className={`h-[26px] w-11 rounded-full ${on ? 'bg-brand' : 'bg-surface3'}`}>
+        <View className={`absolute top-[3px] h-5 w-5 rounded-full bg-white ${on ? 'left-[21px]' : 'left-[3px]'}`} />
       </View>
     </Pressable>
   );
@@ -157,21 +113,19 @@ function Segmented<V extends string>({
   options: [V, string][];
   onChange: (v: V) => void;
 }) {
-  const { t } = useTheme();
   return (
-    <View style={{ flexDirection: 'row', gap: 6, backgroundColor: t.surface2, borderRadius: 10, padding: 3 }}>
+    <View className="flex-row gap-1.5 rounded-[10px] bg-surface2 p-[3px]">
       {options.map(([id, label]) => (
         <Pressable
           key={id}
           onPress={() => onChange(id)}
-          style={{
-            paddingVertical: 7,
-            paddingHorizontal: 16,
-            borderRadius: 8,
-            backgroundColor: value === id ? t.brand : 'transparent',
-          }}
+          className={`rounded-lg px-4 py-[7px] ${value === id ? 'bg-brand' : 'bg-transparent'}`}
         >
-          <Text style={{ color: value === id ? t.brandInk : t.muted, fontSize: 12.5, ...f(800) }}>{label}</Text>
+          <Text
+            className={`font-archivo-extrabold text-[12.5px] ${value === id ? 'text-brand-ink' : 'text-muted'}`}
+          >
+            {label}
+          </Text>
         </Pressable>
       ))}
     </View>
@@ -211,77 +165,46 @@ export function ProfileScreen() {
   if (picking) return <TeamPicker current={team} onClose={() => setPicking(false)} onPick={changeTeam} />;
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}>
+    <ScrollView className="flex-1 bg-canvas" contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}>
       <HeaderGradient style={{ paddingTop: insets.top + 14, paddingHorizontal: 20, paddingBottom: 26 }}>
         <Pressable
           onPress={() => router.back()}
-          style={{
-            position: 'absolute',
-            top: insets.top + 12,
-            right: 18,
-            backgroundColor: t.surface,
-            borderWidth: 1,
-            borderColor: t.line,
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2,
-          }}
+          className="absolute right-[18px] z-[2] h-10 w-10 items-center justify-center rounded-xl border border-line bg-surface"
+          style={{ top: insets.top + 12 }}
         >
           <Icon name="cross" size={18} color={t.text} />
         </Pressable>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+        <View className="flex-row items-center gap-4">
           <View>
-            <View
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: 36,
-                backgroundColor: t.brand,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ fontSize: 30, color: t.brandInk, ...f(800) }}>{name[0]?.toUpperCase()}</Text>
+            <View className="h-[72px] w-[72px] items-center justify-center rounded-full bg-brand">
+              <Text className="font-archivo-extrabold text-[30px] text-brand-ink">{name[0]?.toUpperCase()}</Text>
             </View>
-            <View
-              style={{
-                position: 'absolute',
-                bottom: -2,
-                right: -2,
-                borderWidth: 3,
-                borderColor: t.bg,
-                borderRadius: 8,
-                overflow: 'hidden',
-              }}
-            >
+            <View className="absolute -bottom-0.5 -right-0.5 overflow-hidden rounded-lg border-[3px] border-canvas">
               <Flag code={team} size={28} radius={6} />
             </View>
           </View>
-          <View style={{ minWidth: 0, flex: 1 }}>
-            <Text style={{ fontSize: 23, color: t.text, letterSpacing: -0.4, ...f(800) }}>{name}</Text>
-            <Text style={{ fontSize: 13, color: t.muted, ...f(400) }}>{tm?.name} supporter</Text>
-            <Text style={{ fontSize: 11, color: t.faint, marginTop: 3, ...mono(400) }}>
+          <View className="min-w-0 flex-1">
+            <Text className="font-archivo-extrabold text-[23px] tracking-[-0.4px] text-ink">{name}</Text>
+            <Text className="font-archivo text-[13px] text-muted">{tm?.name} supporter</Text>
+            <Text className="mt-[3px] font-mono text-[11px] text-faint">
               SUPPORTER #2026-{team}
             </Text>
           </View>
         </View>
       </HeaderGradient>
 
-      <View style={{ paddingTop: 18, paddingHorizontal: 16, gap: 20 }}>
+      <View className="gap-5 px-4 pt-[18px]">
         <View>
           <SectionTitle>Your Team</SectionTitle>
           <Card pad={6}>
             <Pressable
               onPress={() => setPicking(true)}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 11, paddingHorizontal: 10 }}
+              className="flex-row items-center gap-[13px] px-2.5 py-[11px]"
             >
               <Flag code={team} size={36} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 15, color: t.text, ...f(800) }}>{tm?.name}</Text>
-                <Text style={{ fontSize: 12, color: t.faint, ...f(400) }}>Group {tm?.group} · Tap to change</Text>
+              <View className="flex-1">
+                <Text className="font-archivo-extrabold text-[15px] text-ink">{tm?.name}</Text>
+                <Text className="font-archivo text-[12px] text-faint">Group {tm?.group} · Tap to change</Text>
               </View>
               <Icon name="chevron" size={18} color={t.faint} />
             </Pressable>
@@ -291,10 +214,10 @@ export function ProfileScreen() {
         <View>
           <SectionTitle>App Theme</SectionTitle>
           <Card pad={16}>
-            <Text style={{ fontSize: 13, color: t.muted, marginBottom: 12, ...f(400) }}>
+            <Text className="mb-3 font-archivo text-[13px] text-muted">
               How much should {tm?.name}&apos;s colors take over?
             </Text>
-            <View style={{ flexDirection: 'row', gap: 8, backgroundColor: t.surface2, borderRadius: 12, padding: 4 }}>
+            <View className="flex-row gap-2 rounded-xl bg-surface2 p-1">
               {(
                 [
                   ['subtle', 'Subtle'],
@@ -304,15 +227,17 @@ export function ProfileScreen() {
                 <Pressable
                   key={id}
                   onPress={() => setIntensity(id)}
-                  style={{
-                    flex: 1,
-                    paddingVertical: 9,
-                    borderRadius: 9,
-                    alignItems: 'center',
-                    backgroundColor: intensity === id ? t.brand : 'transparent',
-                  }}
+                  className={`flex-1 items-center rounded-[9px] py-[9px] ${
+                    intensity === id ? 'bg-brand' : 'bg-transparent'
+                  }`}
                 >
-                  <Text style={{ color: intensity === id ? t.brandInk : t.muted, fontSize: 13, ...f(800) }}>{label}</Text>
+                  <Text
+                    className={`font-archivo-extrabold text-[13px] ${
+                      intensity === id ? 'text-brand-ink' : 'text-muted'
+                    }`}
+                  >
+                    {label}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -322,9 +247,9 @@ export function ProfileScreen() {
         <View>
           <SectionTitle>Appearance</SectionTitle>
           <Card pad={14}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
+            <View className="flex-row items-center gap-[11px]">
               <Icon name={mode === 'light' ? 'globe' : 'star'} size={19} color={t.muted} />
-              <Text style={{ flex: 1, fontSize: 14, color: t.text, ...f(600) }}>Appearance</Text>
+              <Text className="flex-1 font-archivo-semibold text-[14px] text-ink">Appearance</Text>
               <Segmented
                 value={mode}
                 options={[
@@ -347,7 +272,7 @@ export function ProfileScreen() {
               on={notif.goals}
               onToggle={() => setNotif((n) => ({ ...n, goals: !n.goals }))}
             />
-            <View style={{ height: 1, backgroundColor: t.line }} />
+            <View className="h-px bg-line" />
             <ToggleRow
               icon="shirt"
               label="Lineups"
@@ -355,7 +280,7 @@ export function ProfileScreen() {
               on={notif.lineups}
               onToggle={() => setNotif((n) => ({ ...n, lineups: !n.lineups }))}
             />
-            <View style={{ height: 1, backgroundColor: t.line }} />
+            <View className="h-px bg-line" />
             <ToggleRow
               icon="globe"
               label="Team news"
@@ -368,19 +293,11 @@ export function ProfileScreen() {
 
         <Pressable
           onPress={signOut}
-          style={{
-            height: 50,
-            borderRadius: 14,
-            backgroundColor: t.surface,
-            borderWidth: 1,
-            borderColor: t.line,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          className="h-[50px] items-center justify-center rounded-[14px] border border-line bg-surface"
         >
-          <Text style={{ color: '#ff6b6f', fontSize: 14.5, ...f(800) }}>Sign out</Text>
+          <Text className="font-archivo-extrabold text-[14.5px] text-[#ff6b6f]">Sign out</Text>
         </Pressable>
-        <Text style={{ textAlign: 'center', fontSize: 11, color: t.faint, letterSpacing: 0.5, ...mono(400) }}>
+        <Text className="text-center font-mono text-[11px] tracking-[0.5px] text-faint">
           KICKOFF360 · v1.0
         </Text>
       </View>

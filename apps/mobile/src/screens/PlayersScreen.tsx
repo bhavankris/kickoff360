@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { cleanSheets, teamFor, useMatches, useScorers } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Card, Flag, Icon, Pill, SectionTitle } from '../components/ui';
 import { HeaderGradient } from '../components/HeaderGradient';
 
@@ -58,35 +57,24 @@ export function PlayersScreen() {
   const leader = list[0];
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
+    <View className="flex-1 bg-canvas">
       <HeaderGradient style={{ paddingTop: insets.top + 10, paddingHorizontal: 20, paddingBottom: 14 }}>
-        <Text style={{ fontSize: 27, color: t.text, marginBottom: 14, letterSpacing: -0.6, ...f(800) }}>
+        <Text className="mb-3.5 font-archivo-extrabold text-[27px] tracking-[-0.6px] text-ink">
           Top Players
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 6,
-            backgroundColor: t.surface,
-            borderRadius: 13,
-            padding: 4,
-            borderWidth: 1,
-            borderColor: t.line,
-          }}
-        >
+        <View className="flex-row gap-1.5 rounded-[13px] border border-line bg-surface p-1">
           {(Object.keys(MODES) as Mode[]).map((id) => (
             <Pressable
               key={id}
               onPress={() => setMode(id)}
-              style={{
-                flex: 1,
-                paddingVertical: 9,
-                borderRadius: 9,
-                backgroundColor: mode === id ? t.brand : 'transparent',
-                alignItems: 'center',
-              }}
+              className={`flex-1 items-center rounded-[9px] py-[9px] ${
+                mode === id ? 'bg-brand' : 'bg-transparent'
+              }`}
             >
-              <Text numberOfLines={1} style={{ color: mode === id ? t.brandInk : t.muted, fontSize: 12.5, ...f(800) }}>
+              <Text
+                numberOfLines={1}
+                className={`font-archivo-extrabold text-[12.5px] ${mode === id ? 'text-brand-ink' : 'text-muted'}`}
+              >
                 {MODES[id].tab}
               </Text>
             </Pressable>
@@ -94,7 +82,7 @@ export function PlayersScreen() {
         </View>
       </HeaderGradient>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+      <ScrollView className="flex-1" contentContainerClassName="p-4 pb-6">
         {leader ? (
           <>
             {/* leader card */}
@@ -108,61 +96,28 @@ export function PlayersScreen() {
                 overflow: 'hidden',
               }}
             >
-              <View
-                style={{
-                  position: 'absolute',
-                  top: -40,
-                  right: -20,
-                  width: 150,
-                  height: 150,
-                  borderRadius: 75,
-                  backgroundColor: t.brand,
-                  opacity: 0.18,
-                }}
-              />
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+              <View className="absolute -right-5 -top-10 h-[150px] w-[150px] rounded-full bg-brand opacity-[0.18]" />
+              <View className="flex-row items-center gap-4">
                 <View>
-                  <View
-                    style={{
-                      width: 76,
-                      height: 76,
-                      borderRadius: 38,
-                      backgroundColor: t.surface2,
-                      borderWidth: 2,
-                      borderColor: t.brandLine,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      overflow: 'hidden',
-                    }}
-                  >
+                  <View className="h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full border-2 border-brand-line bg-surface2">
                     <Icon name={mode === 'cleansheets' ? 'shirt' : 'user'} size={40} color={t.faint} />
                   </View>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: -3,
-                      right: -3,
-                      borderWidth: 2,
-                      borderColor: t.bg,
-                      borderRadius: 7,
-                      overflow: 'hidden',
-                    }}
-                  >
+                  <View className="absolute -bottom-[3px] -right-[3px] overflow-hidden rounded-[7px] border-2 border-canvas">
                     <Flag code={leader.team} size={26} radius={6} />
                   </View>
                 </View>
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Pill bg={t.brand} color={t.brandInk} fs={10} icon={<Icon name="trophy" size={11} color={t.brandInk} />}>
+                <View className="min-w-0 flex-1">
+                  <Pill className="bg-brand" textClassName="text-brand-ink" fs={10} icon={<Icon name="trophy" size={11} color={t.brandInk} />}>
                     {cfg.rankLabel}
                   </Pill>
-                  <Text style={{ fontSize: 22, color: t.text, marginTop: 8, marginBottom: 1, letterSpacing: -0.4, ...f(800) }}>
+                  <Text className="mb-px mt-2 font-archivo-extrabold text-[22px] tracking-[-0.4px] text-ink">
                     {leader.player}
                   </Text>
-                  <Text style={{ fontSize: 12.5, color: t.muted, ...f(400) }}>{teamFor(leader.team)?.name}</Text>
+                  <Text className="font-archivo text-[12.5px] text-muted">{teamFor(leader.team)?.name}</Text>
                 </View>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ fontSize: 46, lineHeight: 48, color: t.brandText, ...f(800) }}>{leader.stat}</Text>
-                  <Text style={{ fontSize: 10, color: t.faint, letterSpacing: 0.5, ...mono(700) }}>{cfg.unit}</Text>
+                <View className="items-center">
+                  <Text className="font-archivo-extrabold text-[46px] leading-[48px] text-brand-text">{leader.stat}</Text>
+                  <Text className="font-mono-bold text-[10px] tracking-[0.5px] text-faint">{cfg.unit}</Text>
                 </View>
               </View>
             </HeaderGradient>
@@ -174,37 +129,25 @@ export function PlayersScreen() {
                 return (
                   <View
                     key={p.player + p.team}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 12,
-                      paddingVertical: 11,
-                      paddingHorizontal: 10,
-                      borderRadius: 12,
-                      backgroundColor: mine ? t.brandSoft : 'transparent',
-                    }}
+                    className={`flex-row items-center gap-3 rounded-xl px-2.5 py-[11px] ${
+                      mine ? 'bg-brand-soft' : 'bg-transparent'
+                    }`}
                   >
-                    <Text style={{ width: 20, fontSize: 13, color: t.faint, textAlign: 'center', ...mono(700) }}>
+                    <Text className="w-5 text-center font-mono-bold text-[13px] text-faint">
                       {i + 2}
                     </Text>
                     <Flag code={p.team} size={30} />
-                    <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text numberOfLines={1} style={{ fontSize: 14, color: t.text, ...f(700) }}>
+                    <View className="min-w-0 flex-1">
+                      <Text numberOfLines={1} className="font-archivo-bold text-[14px] text-ink">
                         {p.player}
                       </Text>
-                      <Text style={{ fontSize: 11, color: t.faint, ...f(400) }}>{teamFor(p.team)?.name}</Text>
+                      <Text className="font-archivo text-[11px] text-faint">{teamFor(p.team)?.name}</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-                      <Text style={{ fontSize: 11, color: t.faint, ...mono(400) }}>{p.sub}</Text>
+                    <View className="flex-row items-center gap-3.5">
+                      <Text className="font-mono text-[11px] text-faint">{p.sub}</Text>
                       <Text
-                        style={{
-                          fontSize: 20,
-                          color: t.text,
-                          width: 24,
-                          textAlign: 'right',
-                          fontVariant: ['tabular-nums'],
-                          ...f(800),
-                        }}
+                        className="w-6 text-right font-archivo-extrabold text-[20px] text-ink"
+                        style={{ fontVariant: ['tabular-nums'] }}
                       >
                         {p.stat}
                       </Text>
@@ -215,7 +158,7 @@ export function PlayersScreen() {
             </Card>
           </>
         ) : (
-          <Text style={{ textAlign: 'center', color: t.faint, marginTop: 40, fontSize: 14, ...f(400) }}>
+          <Text className="mt-10 text-center font-archivo text-[14px] text-faint">
             Leaderboards appear once the tournament data is in.
           </Text>
         )}

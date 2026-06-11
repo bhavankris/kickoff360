@@ -12,7 +12,6 @@ import { allTeams, completeOnboarding, teamFor, type Team } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
 import { usePrefs } from '../store/prefs';
-import { f, mono } from '../theme/fonts';
 import { Flag, Icon, Pill } from '../components/ui';
 import { HeaderGradient } from '../components/HeaderGradient';
 
@@ -72,46 +71,35 @@ export function ProfileSetupScreen() {
   if (step === 1) {
     return (
       <View
+        className="flex-1 bg-canvas px-[30px]"
         style={{
-          flex: 1,
-          backgroundColor: t.bg,
           paddingTop: insets.top + 28,
-          paddingHorizontal: 30,
           paddingBottom: insets.bottom + 24,
         }}
       >
-        <Pill bg={t.brandSoft} color={t.brandText}>Step 1 of 2</Pill>
-        <Text style={{ fontSize: 34, letterSpacing: -0.8, color: t.text, marginTop: 16, marginBottom: 8, ...f(800) }}>
+        <Pill className="bg-brand-soft" textClassName="text-brand-text">Step 1 of 2</Pill>
+        <Text className="mb-2 mt-4 font-archivo-extrabold text-[34px] tracking-[-0.8px] text-ink">
           What should we call you?
         </Text>
-        <Text style={{ fontSize: 15, color: t.muted, marginBottom: 28, lineHeight: 22, ...f(400) }}>
+        <Text className="mb-7 font-archivo text-[15px] leading-[22px] text-muted">
           This is your supporter name on predictions and leaderboards.
         </Text>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 22 }}>
-          <View
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 26,
-              backgroundColor: t.brand,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 22, color: t.brandInk, ...f(800) }}>
+        <View className="mb-[22px] flex-row items-center gap-3">
+          <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-brand">
+            <Text className="font-archivo-extrabold text-[22px] text-brand-ink">
               {(name.trim()[0] ?? 'A').toUpperCase()}
             </Text>
           </View>
-          <View style={{ minWidth: 0, flex: 1 }}>
-            <Text style={{ fontSize: 12, color: t.faint, ...mono(400) }}>SIGNED IN AS</Text>
-            <Text numberOfLines={1} style={{ fontSize: 14, color: t.muted, ...f(400) }}>
+          <View className="min-w-0 flex-1">
+            <Text className="font-mono text-[12px] text-faint">SIGNED IN AS</Text>
+            <Text numberOfLines={1} className="font-archivo text-[14px] text-muted">
               {user?.email ?? ''}
             </Text>
           </View>
         </View>
 
-        <Text style={{ fontSize: 12, color: t.faint, letterSpacing: 0.6, textTransform: 'uppercase', ...mono(700) }}>
+        <Text className="font-mono-bold text-[12px] uppercase tracking-[0.6px] text-faint">
           Display name
         </Text>
         <TextInput
@@ -121,35 +109,20 @@ export function ProfileSetupScreen() {
           placeholder="Your name"
           placeholderTextColor={t.faint}
           maxLength={24}
-          style={{
-            marginTop: 8,
-            height: 56,
-            borderRadius: 16,
-            paddingHorizontal: 16,
-            backgroundColor: t.surface,
-            borderWidth: 1.5,
-            borderColor: t.brandLine,
-            color: t.text,
-            fontSize: 18,
-            ...f(600),
-          }}
+          className="mt-2 h-14 rounded-2xl border-[1.5px] border-brand-line bg-surface px-4 font-archivo-semibold text-[18px] text-ink"
         />
 
-        <View style={{ flex: 1 }} />
+        <View className="flex-1" />
         <Pressable
           onPress={() => valid && setStep(2)}
           disabled={!valid}
-          style={{
-            height: 56,
-            borderRadius: 16,
-            backgroundColor: valid ? t.brand : t.surface2,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-          }}
+          className={`h-14 flex-row items-center justify-center gap-2 rounded-2xl ${
+            valid ? 'bg-brand' : 'bg-surface2'
+          }`}
         >
-          <Text style={{ color: valid ? t.brandInk : t.faint, fontSize: 16, ...f(800) }}>Continue</Text>
+          <Text className={`font-archivo-extrabold text-[16px] ${valid ? 'text-brand-ink' : 'text-faint'}`}>
+            Continue
+          </Text>
           <Icon name="chevron" size={18} sw={2.6} color={valid ? t.brandInk : t.faint} />
         </Pressable>
       </View>
@@ -162,26 +135,16 @@ export function ProfileSetupScreen() {
     return (
       <Pressable
         onPress={() => choose(tm.code)}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          paddingVertical: 11,
-          paddingHorizontal: 12,
-          borderRadius: 14,
-          backgroundColor: sel ? t.brandSoft : t.surface,
-          borderWidth: 1.5,
-          borderColor: sel ? t.brandText : t.line,
-          margin: 5,
-        }}
+        className={`m-[5px] flex-1 flex-row items-center gap-2.5 rounded-[14px] border-[1.5px] px-3 py-[11px] ${
+          sel ? 'border-brand-text bg-brand-soft' : 'border-line bg-surface'
+        }`}
       >
         <Flag code={tm.code} size={30} />
-        <View style={{ minWidth: 0, flex: 1 }}>
-          <Text numberOfLines={1} style={{ fontSize: 14, color: t.text, ...f(700) }}>
+        <View className="min-w-0 flex-1">
+          <Text numberOfLines={1} className="font-archivo-bold text-[14px] text-ink">
             {tm.name}
           </Text>
-          <Text style={{ fontSize: 11, color: t.faint, ...mono(400) }}>GROUP {tm.group}</Text>
+          <Text className="font-mono text-[11px] text-faint">GROUP {tm.group}</Text>
         </View>
         {sel ? <Icon name="check" size={17} color={t.brandText} sw={2.8} /> : null}
       </Pressable>
@@ -189,42 +152,30 @@ export function ProfileSetupScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
+    <View className="flex-1 bg-canvas">
       <HeaderGradient style={{ paddingTop: insets.top + 16, paddingHorizontal: 24, paddingBottom: 14 }}>
         <Pressable
           onPress={() => setStep(1)}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 14 }}
+          className="mb-3.5 flex-row items-center gap-1"
         >
           <Icon name="back" size={20} color={t.muted} />
-          <Text style={{ fontSize: 14, color: t.muted, ...f(600) }}>Back</Text>
+          <Text className="font-archivo-semibold text-[14px] text-muted">Back</Text>
         </Pressable>
-        <Pill bg={t.brandSoft} color={t.brandText}>Step 2 of 2</Pill>
-        <Text style={{ fontSize: 30, letterSpacing: -0.6, color: t.text, marginTop: 12, marginBottom: 4, ...f(800) }}>
+        <Pill className="bg-brand-soft" textClassName="text-brand-text">Step 2 of 2</Pill>
+        <Text className="mb-1 mt-3 font-archivo-extrabold text-[30px] tracking-[-0.6px] text-ink">
           Pick your nation
         </Text>
-        <Text style={{ fontSize: 14, color: t.muted, marginBottom: 14, ...f(400) }}>
+        <Text className="mb-3.5 font-archivo text-[14px] text-muted">
           The whole app takes on their colors. Change it anytime.
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-            backgroundColor: t.surface,
-            borderWidth: 1,
-            borderColor: t.line,
-            borderRadius: 14,
-            paddingHorizontal: 14,
-            height: 46,
-          }}
-        >
+        <View className="h-[46px] flex-row items-center gap-2.5 rounded-[14px] border border-line bg-surface px-3.5">
           <Icon name="search" size={18} color={t.faint} />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Search 48 teams"
             placeholderTextColor={t.faint}
-            style={{ flex: 1, color: t.text, fontSize: 15, ...f(500) }}
+            className="flex-1 font-archivo-medium text-[15px] text-ink"
           />
         </View>
       </HeaderGradient>
@@ -234,45 +185,33 @@ export function ProfileSetupScreen() {
         numColumns={2}
         keyExtractor={(tm) => tm.code}
         renderItem={renderTeam}
-        contentContainerStyle={{ paddingHorizontal: 13, paddingTop: 9, paddingBottom: 10 }}
+        contentContainerClassName="px-[13px] pb-2.5 pt-[9px]"
         ListEmptyComponent={
-          <Text style={{ textAlign: 'center', color: t.faint, marginTop: 30, fontSize: 14, ...f(400) }}>
+          <Text className="mt-[30px] text-center font-archivo text-[14px] text-faint">
             No teams match “{query}”.
           </Text>
         }
       />
 
       <View
-        style={{
-          paddingHorizontal: 20,
-          paddingTop: 12,
-          paddingBottom: insets.bottom + 16,
-          backgroundColor: t.surface,
-          borderTopWidth: 1,
-          borderTopColor: t.line,
-        }}
+        className="border-t border-t-line bg-surface px-5 pt-3"
+        style={{ paddingBottom: insets.bottom + 16 }}
       >
         {error ? (
-          <Text style={{ marginBottom: 8, textAlign: 'center', color: t.live, fontSize: 13, ...f(600) }}>{error}</Text>
+          <Text className="mb-2 text-center font-archivo-semibold text-[13px] text-live">{error}</Text>
         ) : null}
         <Pressable
           onPress={onComplete}
           disabled={!pick || busy}
-          style={{
-            height: 56,
-            borderRadius: 16,
-            backgroundColor: pick ? t.brand : t.surface2,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 9,
-          }}
+          className={`h-14 flex-row items-center justify-center gap-[9px] rounded-2xl ${
+            pick ? 'bg-brand' : 'bg-surface2'
+          }`}
         >
           {busy ? (
             <ActivityIndicator color={t.brandInk} />
           ) : (
             <>
-              <Text style={{ color: pick ? t.brandInk : t.faint, fontSize: 16, ...f(800) }}>
+              <Text className={`font-archivo-extrabold text-[16px] ${pick ? 'text-brand-ink' : 'text-faint'}`}>
                 {pick ? `Enter as a ${teamFor(pick)?.name} fan` : 'Select a team to continue'}
               </Text>
               {pick ? <Icon name="chevron" size={18} sw={2.6} color={t.brandInk} /> : null}
