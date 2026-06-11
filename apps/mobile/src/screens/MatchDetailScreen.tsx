@@ -21,7 +21,6 @@ import {
 } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Card, Flag, Icon, LiveDot, MediaSlot, Pill, SectionTitle, StatBar } from '../components/ui';
 import { PitchLineup } from '../components/PitchLineup';
 import { HeaderGradient } from '../components/HeaderGradient';
@@ -32,35 +31,25 @@ function EvIcon({ type }: { type: MatchEvent['type'] }) {
   const { t } = useTheme();
   if (type === 'goal') {
     return (
-      <View
-        style={{
-          width: 22,
-          height: 22,
-          borderRadius: 11,
-          backgroundColor: t.text,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <View style={{ width: 13, height: 13, borderRadius: 7, backgroundColor: '#fff', borderWidth: 1, borderColor: '#111' }} />
+      <View className="h-[22px] w-[22px] items-center justify-center rounded-full bg-ink">
+        <View className="h-[13px] w-[13px] rounded-[7px] border border-[#111] bg-white" />
       </View>
     );
   }
-  if (type === 'yellow') return <View style={{ width: 14, height: 19, borderRadius: 3, backgroundColor: '#ffcf2e' }} />;
-  if (type === 'red') return <View style={{ width: 14, height: 19, borderRadius: 3, backgroundColor: '#e8323a' }} />;
+  if (type === 'yellow') return <View className="h-[19px] w-3.5 rounded-[3px] bg-[#ffcf2e]" />;
+  if (type === 'red') return <View className="h-[19px] w-3.5 rounded-[3px] bg-[#e8323a]" />;
   return <Icon name="share" size={18} color={t.brandText} />; // sub
 }
 
 function EvContent({ e, align }: { e: MatchEvent; align: 'left' | 'right' }) {
-  const { t } = useTheme();
   const right = align === 'right';
   return (
-    <View style={{ alignItems: right ? 'flex-end' : 'flex-start', maxWidth: 150 }}>
-      <View style={{ flexDirection: right ? 'row-reverse' : 'row', alignItems: 'center', gap: 7 }}>
+    <View className={`max-w-[150px] ${right ? 'items-end' : 'items-start'}`}>
+      <View className={`items-center gap-[7px] ${right ? 'flex-row-reverse' : 'flex-row'}`}>
         <EvIcon type={e.type} />
-        <Text style={{ fontSize: 13.5, color: t.text, ...f(800) }}>{e.player}</Text>
+        <Text className="font-archivo-extrabold text-[13.5px] text-ink">{e.player}</Text>
       </View>
-      <Text style={{ fontSize: 11, color: t.faint, marginTop: 2, textAlign: right ? 'right' : 'left', ...f(400) }}>
+      <Text className={`mt-0.5 font-archivo text-[11px] text-faint ${right ? 'text-right' : 'text-left'}`}>
         {e.detail}
       </Text>
     </View>
@@ -69,58 +58,42 @@ function EvContent({ e, align }: { e: MatchEvent; align: 'left' | 'right' }) {
 
 /** Home events anchored left, away right, minutes down the centre. */
 function Timeline({ match, events }: { match: MatchDoc; events: MatchEvent[] }) {
-  const { t } = useTheme();
   return (
     <View>
       {/* side legend */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+      <View className="mb-3 flex-row items-center justify-between">
+        <View className="flex-row items-center gap-[7px]">
           <Flag code={match.home} size={20} />
-          <Text style={{ fontSize: 12, color: t.text, ...f(800) }}>{match.home}</Text>
+          <Text className="font-archivo-extrabold text-[12px] text-ink">{match.home}</Text>
         </View>
-        <Text style={{ fontSize: 10, color: t.faint, letterSpacing: 0.6, ...mono(700) }}>TIMELINE</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-          <Text style={{ fontSize: 12, color: t.text, ...f(800) }}>{match.away}</Text>
+        <Text className="font-mono-bold text-[10px] tracking-[0.6px] text-faint">TIMELINE</Text>
+        <View className="flex-row items-center gap-[7px]">
+          <Text className="font-archivo-extrabold text-[12px] text-ink">{match.away}</Text>
           <Flag code={match.away} size={20} />
         </View>
       </View>
-      <View style={{ paddingVertical: 4 }}>
+      <View className="py-1">
         <View
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: 0,
-            bottom: 0,
-            width: 2,
-            backgroundColor: t.line,
-            transform: [{ translateX: -1 }],
-          }}
+          className="absolute bottom-0 left-1/2 top-0 w-0.5 bg-line"
+          style={{ transform: [{ translateX: -1 }] }}
         />
         {[...events].reverse().map((e, i) => {
           const isHome = e.team === match.home;
           return (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 14 }}>
-              <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 14 }}>
+            <View key={i} className="mb-3.5 flex-row items-center">
+              <View className="flex-1 items-end pr-3.5">
                 {isHome ? <EvContent e={e} align="right" /> : null}
               </View>
-              <View style={{ width: 34, alignItems: 'center' }}>
+              <View className="w-[34px] items-center">
                 <Text
-                  style={{
-                    backgroundColor: e.type === 'goal' ? t.brand : t.surface2,
-                    color: e.type === 'goal' ? t.brandInk : t.muted,
-                    fontSize: 11,
-                    paddingVertical: 3,
-                    width: 34,
-                    textAlign: 'center',
-                    borderRadius: 100,
-                    overflow: 'hidden',
-                    ...mono(700),
-                  }}
+                  className={`w-[34px] overflow-hidden rounded-full py-[3px] text-center font-mono-bold text-[11px] ${
+                    e.type === 'goal' ? 'bg-brand text-brand-ink' : 'bg-surface2 text-muted'
+                  }`}
                 >
                   {e.minute}&apos;
                 </Text>
               </View>
-              <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: 14 }}>
+              <View className="flex-1 items-start pl-3.5">
                 {!isHome ? <EvContent e={e} align="left" /> : null}
               </View>
             </View>
@@ -134,19 +107,10 @@ function Timeline({ match, events }: { match: MatchDoc; events: MatchEvent[] }) 
 function FactRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   const { t } = useTheme();
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingVertical: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: t.line,
-      }}
-    >
+    <View className="flex-row items-center gap-3 border-b border-b-line py-3">
       <Icon name={icon} size={18} color={t.faint} />
-      <Text style={{ fontSize: 13, color: t.muted, flex: 1, ...f(400) }}>{label}</Text>
-      <Text style={{ fontSize: 13.5, color: t.text, textAlign: 'right', ...f(700) }}>{value}</Text>
+      <Text className="flex-1 font-archivo text-[13px] text-muted">{label}</Text>
+      <Text className="text-right font-archivo-bold text-[13.5px] text-ink">{value}</Text>
     </View>
   );
 }
@@ -167,14 +131,14 @@ function SummaryTab({
   const { t } = useTheme();
   const hasEvents = !!detail?.events?.length;
   return (
-    <View style={{ gap: 18 }}>
+    <View className="gap-[18px]">
       {live && detail?.stats ? (
         <Card pad={16}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <Text style={{ fontSize: 12, color: t.muted, letterSpacing: 0.6, ...mono(700) }}>POSSESSION</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <View className="mb-3 flex-row items-center justify-between">
+            <Text className="font-mono-bold text-[12px] tracking-[0.6px] text-muted">POSSESSION</Text>
+            <View className="flex-row items-center gap-[5px]">
               <LiveDot size={6} />
-              <Text style={{ fontSize: 11, color: t.live, ...mono(700) }}>LIVE</Text>
+              <Text className="font-mono-bold text-[11px] text-live">LIVE</Text>
             </View>
           </View>
           <StatBar label="POSSESSION" a={detail.stats.possession[0]!} b={detail.stats.possession[1]!} suffix="%" />
@@ -184,10 +148,10 @@ function SummaryTab({
 
       {up && detail?.preview ? (
         <Card pad={16} style={{ backgroundColor: t.brandSoft, borderColor: t.brandLine }}>
-          <Text style={{ fontSize: 11, color: t.brandText, letterSpacing: 0.8, marginBottom: 8, ...mono(700) }}>
+          <Text className="mb-2 font-mono-bold text-[11px] tracking-[0.8px] text-brand-text">
             MATCH PREVIEW
           </Text>
-          <Text style={{ fontSize: 14.5, lineHeight: 22, color: t.text, ...f(400) }}>{detail.preview}</Text>
+          <Text className="font-archivo text-[14.5px] leading-[22px] text-ink">{detail.preview}</Text>
         </Card>
       ) : null}
 
@@ -199,7 +163,7 @@ function SummaryTab({
       ) : !up ? (
         <Card pad={20} style={{ alignItems: 'center' }}>
           <Icon name="whistle" size={26} color={t.faint} />
-          <Text style={{ marginTop: 10, fontSize: 13.5, color: t.muted, textAlign: 'center', ...f(400) }}>
+          <Text className="mt-2.5 text-center font-archivo text-[13.5px] text-muted">
             Full match report and goal-by-goal timeline coming up shortly.
           </Text>
         </Card>
@@ -213,20 +177,14 @@ function SummaryTab({
             return (
               <View
                 key={c}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 12,
-                  paddingVertical: 9,
-                  paddingHorizontal: 2,
-                  borderTopWidth: idx ? 1 : 0,
-                  borderTopColor: t.line,
-                }}
+                className={`flex-row items-center gap-3 px-0.5 py-[9px] ${
+                  idx ? 'border-t border-t-line' : ''
+                }`}
               >
                 <Flag code={c} size={22} />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 13.5, color: t.text, ...f(700) }}>{teamFor(c)?.name}</Text>
-                  <Text style={{ fontSize: 11, color: t.faint, ...f(400) }}>
+                <View className="min-w-0 flex-1">
+                  <Text className="font-archivo-bold text-[13.5px] text-ink">{teamFor(c)?.name}</Text>
+                  <Text className="font-archivo text-[11px] text-faint">
                     {form.length === 0
                       ? 'Opening match of their campaign'
                       : `${form.length} played · ${form.filter((x) => x.r === 'W').length}W ${form.filter((x) => x.r === 'D').length}D ${form.filter((x) => x.r === 'L').length}L`}
@@ -235,20 +193,15 @@ function SummaryTab({
                 {form.length === 0 ? (
                   <Pill fs={10}>1ST GAME</Pill>
                 ) : (
-                  <View style={{ flexDirection: 'row', gap: 5 }}>
+                  <View className="flex-row gap-[5px]">
                     {form.map((x, i) => (
                       <View
                         key={i}
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: 7,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: x.r === 'W' ? t.win : x.r === 'L' ? t.live : t.faint,
-                        }}
+                        className={`h-[26px] w-[26px] items-center justify-center rounded-[7px] ${
+                          x.r === 'W' ? 'bg-win' : x.r === 'L' ? 'bg-live' : 'bg-faint'
+                        }`}
                       >
-                        <Text style={{ fontSize: 11, color: '#fff', ...f(800) }}>{x.r}</Text>
+                        <Text className="font-archivo-extrabold text-[11px] text-white">{x.r}</Text>
                       </View>
                     ))}
                   </View>
@@ -263,7 +216,6 @@ function SummaryTab({
 }
 
 function StatsTab({ m, stats }: { m: MatchDoc; stats: MatchStats }) {
-  const { t } = useTheme();
   const rows: [string, number[], string, boolean?][] = [
     ['POSSESSION', stats.possession, '%'],
     ['SHOTS', stats.shots, ''],
@@ -277,14 +229,14 @@ function StatsTab({ m, stats }: { m: MatchDoc; stats: MatchStats }) {
   ];
   return (
     <Card pad={18}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+      <View className="mb-4 flex-row items-center justify-between">
+        <View className="flex-row items-center gap-[7px]">
           <Flag code={m.home} size={22} />
-          <Text style={{ fontSize: 13, color: t.text, ...f(800) }}>{m.home}</Text>
+          <Text className="font-archivo-extrabold text-[13px] text-ink">{m.home}</Text>
         </View>
-        <Text style={{ fontSize: 11, color: t.faint, ...mono(700) }}>TEAM STATS</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-          <Text style={{ fontSize: 13, color: t.text, ...f(800) }}>{m.away}</Text>
+        <Text className="font-mono-bold text-[11px] text-faint">TEAM STATS</Text>
+        <View className="flex-row items-center gap-[7px]">
+          <Text className="font-archivo-extrabold text-[13px] text-ink">{m.away}</Text>
           <Flag code={m.away} size={22} />
         </View>
       </View>
@@ -296,30 +248,35 @@ function StatsTab({ m, stats }: { m: MatchDoc; stats: MatchStats }) {
 }
 
 function TeamNews({ injuries }: { injuries: InjuryNote[] }) {
-  const { t } = useTheme();
   return (
-    <View style={{ marginTop: 18 }}>
+    <View className="mt-[18px]">
       <SectionTitle>Team News &amp; Injuries</SectionTitle>
       <Card pad={6}>
         {injuries.map((inj, i) => (
-          <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 11, paddingHorizontal: 10 }}>
+          <View key={i} className="flex-row items-center gap-3 px-2.5 py-[11px]">
             <Flag code={inj.team} size={26} />
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 14, color: t.text, ...f(700) }}>
-                {inj.player} <Text style={{ fontSize: 11, color: t.faint, ...f(600) }}>· {inj.pos}</Text>
+            <View className="min-w-0 flex-1">
+              <Text className="font-archivo-bold text-[14px] text-ink">
+                {inj.player} <Text className="font-archivo-semibold text-[11px] text-faint">· {inj.pos}</Text>
               </Text>
-              <Text style={{ fontSize: 11.5, color: t.faint, ...f(400) }}>{inj.note}</Text>
+              <Text className="font-archivo text-[11.5px] text-faint">{inj.note}</Text>
             </View>
             <Pill
               fs={10}
-              bg={
+              className={
                 inj.status.startsWith('Out')
-                  ? 'rgba(232,50,58,0.16)'
+                  ? 'bg-[rgba(232,50,58,0.16)]'
                   : inj.status.startsWith('Doubt')
-                    ? 'rgba(255,207,46,0.16)'
-                    : t.brandSoft
+                    ? 'bg-[rgba(255,207,46,0.16)]'
+                    : 'bg-brand-soft'
               }
-              color={inj.status.startsWith('Out') ? '#ff6b6f' : inj.status.startsWith('Doubt') ? '#ffcf2e' : t.brandText}
+              textClassName={
+                inj.status.startsWith('Out')
+                  ? 'text-[#ff6b6f]'
+                  : inj.status.startsWith('Doubt')
+                    ? 'text-[#ffcf2e]'
+                    : 'text-brand-text'
+              }
             >
               {inj.status.split(' ')[0]}
             </Pill>
@@ -333,7 +290,7 @@ function TeamNews({ injuries }: { injuries: InjuryNote[] }) {
 function InfoTab({ m, v, detail }: { m: MatchDoc; v: Venue | undefined; detail: MatchDetailDoc | null }) {
   const { t } = useTheme();
   return (
-    <View style={{ gap: 18 }}>
+    <View className="gap-[18px]">
       <HeaderGradient
         style={{
           borderRadius: 16,
@@ -344,40 +301,20 @@ function InfoTab({ m, v, detail }: { m: MatchDoc; v: Venue | undefined; detail: 
           borderColor: t.brandLine,
         }}
       >
-        <View
-          style={{
-            position: 'absolute',
-            top: -40,
-            right: -24,
-            width: 150,
-            height: 150,
-            borderRadius: 75,
-            backgroundColor: t.brand,
-            opacity: 0.16,
-          }}
-        />
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-          <View style={{ minWidth: 0, flex: 1 }}>
-            <Pill bg={t.brandSoft} color={t.brandText} fs={10} icon={<Icon name="pin" size={11} color={t.brandText} />}>
+        <View className="absolute -right-6 -top-10 h-[150px] w-[150px] rounded-full bg-brand opacity-[0.16]" />
+        <View className="flex-row items-start justify-between gap-3">
+          <View className="min-w-0 flex-1">
+            <Pill className="bg-brand-soft" textClassName="text-brand-text" fs={10} icon={<Icon name="pin" size={11} color={t.brandText} />}>
               VENUE
             </Pill>
-            <Text style={{ fontSize: 20, color: t.text, marginTop: 10, marginBottom: 2, letterSpacing: -0.4, ...f(800) }}>
+            <Text className="mb-0.5 mt-2.5 font-archivo-extrabold text-[20px] tracking-[-0.4px] text-ink">
               {v?.name}
             </Text>
-            <Text style={{ fontSize: 12.5, color: t.muted, ...f(400) }}>
+            <Text className="font-archivo text-[12.5px] text-muted">
               {v?.city}, {v?.country}
             </Text>
           </View>
-          <View
-            style={{
-              width: 46,
-              height: 46,
-              borderRadius: 13,
-              backgroundColor: t.surface2,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View className="h-[46px] w-[46px] items-center justify-center rounded-[13px] bg-surface2">
             <Icon name="field" size={24} color={t.brandText} />
           </View>
         </View>
@@ -397,21 +334,12 @@ function InfoTab({ m, v, detail }: { m: MatchDoc; v: Venue | undefined; detail: 
       <View>
         <SectionTitle>Fan Zone</SectionTitle>
         <Card pad={18} style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-          <View
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 13,
-              backgroundColor: t.brandSoft,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View className="h-11 w-11 items-center justify-center rounded-[13px] bg-brand-soft">
             <Icon name="globe" size={22} color={t.brandText} />
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14, color: t.text, ...f(800) }}>Social buzz &amp; fan feeds</Text>
-            <Text style={{ fontSize: 12, color: t.faint, ...f(400) }}>Live posts, polls and chants</Text>
+          <View className="flex-1">
+            <Text className="font-archivo-extrabold text-[14px] text-ink">Social buzz &amp; fan feeds</Text>
+            <Text className="font-archivo text-[12px] text-faint">Live posts, polls and chants</Text>
           </View>
           <Pill fs={10}>SOON</Pill>
         </Card>
@@ -433,8 +361,8 @@ export function MatchDetailScreen() {
   const m = useMemo(() => matches.find((x) => x.matchId === id), [matches, id]);
   if (!m) {
     return (
-      <View style={{ flex: 1, backgroundColor: t.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: t.faint, fontSize: 14, ...f(400) }}>Match not found.</Text>
+      <View className="flex-1 items-center justify-center bg-canvas">
+        <Text className="font-archivo text-[14px] text-faint">Match not found.</Text>
       </View>
     );
   }
@@ -451,85 +379,66 @@ export function MatchDetailScreen() {
   const activeTab = tabs.includes(tab) ? tab : 'Summary';
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
+    <View className="flex-1 bg-canvas">
       {/* header */}
       <HeaderGradient style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: 18 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
+        <View className="mb-1.5 flex-row justify-between">
           <Pressable
             onPress={() => router.back()}
-            style={{
-              backgroundColor: t.glass,
-              borderWidth: 1,
-              borderColor: t.glassLine,
-              width: 38,
-              height: 38,
-              borderRadius: 12,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className="h-[38px] w-[38px] items-center justify-center rounded-xl border border-glass-line bg-glass"
           >
             <Icon name="back" size={20} color={t.text} />
           </Pressable>
-          <Pill bg={t.glass} color={t.muted} fs={10}>
+          <Pill className="bg-glass" textClassName="text-muted" fs={10}>
             {m.stage} · MD{m.matchday}
           </Pill>
-          <View
-            style={{
-              backgroundColor: t.glass,
-              borderWidth: 1,
-              borderColor: t.glassLine,
-              width: 38,
-              height: 38,
-              borderRadius: 12,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View className="h-[38px] w-[38px] items-center justify-center rounded-xl border border-glass-line bg-glass">
             <Icon name="share" size={18} color={t.text} />
           </View>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-          <View style={{ flex: 1, alignItems: 'center', gap: 9 }}>
+        <View className="mt-2 flex-row items-center justify-between">
+          <View className="flex-1 items-center gap-[9px]">
             <Flag code={m.home} size={56} radius={15} />
-            <Text style={{ fontSize: 14, color: t.text, ...f(800) }}>{h?.name}</Text>
+            <Text className="font-archivo-extrabold text-[14px] text-ink">{h?.name}</Text>
           </View>
-          <View style={{ minWidth: 96, alignItems: 'center' }}>
+          <View className="min-w-[96px] items-center">
             {up ? (
               <>
-                <Text style={{ fontSize: 26, color: t.text, ...f(800) }}>{timeLabel(m.kickoff)}</Text>
-                <Text style={{ fontSize: 11, color: t.muted, marginTop: 2, ...mono(400) }}>
+                <Text className="font-archivo-extrabold text-[26px] text-ink">{timeLabel(m.kickoff)}</Text>
+                <Text className="mt-0.5 font-mono text-[11px] text-muted">
                   {relDay(m.kickoff).toUpperCase()}
                 </Text>
               </>
             ) : (
               <>
-                <Text style={{ fontSize: 48, lineHeight: 50, color: t.text, fontVariant: ['tabular-nums'], ...f(800) }}>
+                <Text
+                  className="font-archivo-extrabold text-[48px] leading-[50px] text-ink"
+                  style={{ fontVariant: ['tabular-nums'] }}
+                >
                   {m.score?.home}
-                  <Text style={{ color: t.faint }}> : </Text>
+                  <Text className="text-faint"> : </Text>
                   {m.score?.away}
                 </Text>
                 {live ? (
-                  <View style={{ marginTop: 8 }}>
-                    <Pill bg={t.live} color="#fff" fs={10} icon={<LiveDot size={6} color="#fff" />}>
+                  <View className="mt-2">
+                    <Pill className="bg-live" textClassName="text-white" fs={10} icon={<LiveDot size={6} color="#fff" />}>
                       LIVE {m.minute}&apos;
                     </Pill>
                   </View>
                 ) : (
-                  <Text style={{ fontSize: 11, color: t.muted, marginTop: 6, ...mono(400) }}>FULL TIME</Text>
+                  <Text className="mt-1.5 font-mono text-[11px] text-muted">FULL TIME</Text>
                 )}
               </>
             )}
           </View>
-          <View style={{ flex: 1, alignItems: 'center', gap: 9 }}>
+          <View className="flex-1 items-center gap-[9px]">
             <Flag code={m.away} size={56} radius={15} />
-            <Text style={{ fontSize: 14, color: t.text, ...f(800) }}>{a?.name}</Text>
+            <Text className="font-archivo-extrabold text-[14px] text-ink">{a?.name}</Text>
           </View>
         </View>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 14 }}
-        >
+        <View className="mt-3.5 flex-row items-center justify-center gap-1.5">
           <Icon name="pin" size={13} color={t.faint} />
-          <Text style={{ fontSize: 12, color: t.muted, ...f(400) }}>
+          <Text className="font-archivo text-[12px] text-muted">
             {v?.name} · {v?.city}
           </Text>
           {mine ? <Icon name="star" size={12} color={t.brandText} fill={t.brandText} sw={1} /> : null}
@@ -537,35 +446,22 @@ export function MatchDetailScreen() {
       </HeaderGradient>
 
       {/* tab strip */}
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: t.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: t.line,
-          paddingHorizontal: 8,
-        }}
-      >
+      <View className="flex-row border-b border-b-line bg-surface px-2">
         {tabs.map((tb) => (
           <Pressable
             key={tb}
             onPress={() => setTab(tb)}
-            style={{ flex: 1, paddingTop: 13, paddingBottom: 11, alignItems: 'center' }}
+            className="flex-1 items-center pb-[11px] pt-[13px]"
           >
-            <Text style={{ fontSize: 13, color: activeTab === tb ? t.brandText : t.faint, ...f(activeTab === tb ? 800 : 600) }}>
+            <Text
+              className={`text-[13px] ${
+                activeTab === tb ? 'font-archivo-extrabold text-brand-text' : 'font-archivo-semibold text-faint'
+              }`}
+            >
               {tb}
             </Text>
             {activeTab === tb ? (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  width: 30,
-                  height: 3,
-                  borderRadius: 3,
-                  backgroundColor: t.brandText,
-                }}
-              />
+              <View className="absolute bottom-0 h-[3px] w-[30px] rounded-[3px] bg-brand-text" />
             ) : null}
           </Pressable>
         ))}
@@ -573,41 +469,38 @@ export function MatchDetailScreen() {
 
       {/* switch between other live matches without leaving the centre */}
       {otherLive.length > 0 ? (
-        <View style={{ backgroundColor: t.surface, borderBottomWidth: 1, borderBottomColor: t.line, paddingVertical: 9, paddingHorizontal: 12 }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, alignItems: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 2 }}>
+        <View className="border-b border-b-line bg-surface px-3 py-[9px]">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="items-center gap-2">
+            <View className="flex-row items-center gap-[5px] px-0.5">
               <LiveDot size={6} />
-              <Text style={{ fontSize: 10, color: t.live, letterSpacing: 0.4, ...mono(700) }}>ALSO LIVE</Text>
+              <Text className="font-mono-bold text-[10px] tracking-[0.4px] text-live">ALSO LIVE</Text>
             </View>
             {otherLive.map((x) => (
               <Pressable
                 key={x.matchId}
                 onPress={() => router.setParams({ id: x.matchId })}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 7,
-                  paddingVertical: 6,
-                  paddingHorizontal: 10,
-                  borderRadius: 100,
-                  backgroundColor: t.surface2,
-                  borderWidth: 1,
-                  borderColor: t.line,
-                }}
+                className="flex-row items-center gap-[7px] rounded-full border border-line bg-surface2 px-2.5 py-1.5"
               >
                 <Flag code={x.home} size={18} />
-                <Text style={{ fontSize: 12.5, color: t.text, fontVariant: ['tabular-nums'], ...f(800) }}>
+                <Text
+                  className="font-archivo-extrabold text-[12.5px] text-ink"
+                  style={{ fontVariant: ['tabular-nums'] }}
+                >
                   {x.score?.home}-{x.score?.away}
                 </Text>
                 <Flag code={x.away} size={18} />
-                <Text style={{ fontSize: 10.5, color: t.live, ...mono(700) }}>{x.minute}&apos;</Text>
+                <Text className="font-mono-bold text-[10.5px] text-live">{x.minute}&apos;</Text>
               </Pressable>
             ))}
           </ScrollView>
         </View>
       ) : null}
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 24 }}>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="p-4"
+        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+      >
         {activeTab === 'Summary' ? <SummaryTab m={m} matches={matches} detail={detail} live={live} up={up} /> : null}
         {activeTab === 'Stats' && detail?.stats ? <StatsTab m={m} stats={detail.stats} /> : null}
         {activeTab === 'Lineups' && detail?.lineups ? (

@@ -16,7 +16,6 @@ import {
 } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Card, Flag, Icon, LiveDot, Pill, SectionTitle } from '../components/ui';
 import { LiveCountdown } from '../components/LiveCountdown';
 import { HeaderGradient } from '../components/HeaderGradient';
@@ -30,78 +29,62 @@ function LiveMatchCard({ m, mine, onOpen }: { m: MatchDoc; mine: boolean; onOpen
 
   const inner = (
     <>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingVertical: 11,
-          paddingHorizontal: 14,
-          borderBottomWidth: 1,
-          borderBottomColor: t.line,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-          <Pill bg={t.live} color="#fff" fs={10} icon={<LiveDot size={6} color="#fff" />}>
+      <View className="flex-row items-center justify-between border-b border-b-line px-3.5 py-[11px]">
+        <View className="flex-row items-center gap-[7px]">
+          <Pill className="bg-live" textClassName="text-white" fs={10} icon={<LiveDot size={6} color="#fff" />}>
             {m.minute}&apos;
           </Pill>
           {mine ? (
-            <Pill bg={t.brandSoft} color={t.brandText} fs={10} icon={<Icon name="star" size={10} fill={t.brandText} sw={1} color={t.brandText} />}>
+            <Pill className="bg-brand-soft" textClassName="text-brand-text" fs={10} icon={<Icon name="star" size={10} fill={t.brandText} sw={1} color={t.brandText} />}>
               YOUR MATCH
             </Pill>
           ) : null}
         </View>
-        <Pill fs={10} color={t.faint}>
+        <Pill fs={10} textClassName="text-faint">
           {m.stage} · MD{m.matchday}
         </Pill>
       </View>
-      <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 14 }}>
+      <View className="px-4 pb-3.5 pt-4">
         {[
           { code: m.home, sc: m.score?.home ?? 0 },
           { code: m.away, sc: m.score?.away ?? 0 },
         ].map(({ code, sc }, i) => (
           <View
             key={code}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: i === 0 ? 13 : 0 }}
+            className={`flex-row items-center gap-3 ${i === 0 ? 'mb-[13px]' : ''}`}
           >
             <Flag code={code} size={34} radius={10} />
-            <Text style={{ flex: 1, fontSize: 16, color: t.text, ...f(800) }}>{teamFor(code)?.name}</Text>
-            <Text style={{ fontSize: 26, color: t.text, fontVariant: ['tabular-nums'], ...f(800) }}>{sc}</Text>
+            <Text className="flex-1 font-archivo-extrabold text-[16px] text-ink">{teamFor(code)?.name}</Text>
+            <Text
+              className="font-archivo-extrabold text-[26px] text-ink"
+              style={{ fontVariant: ['tabular-nums'] }}
+            >
+              {sc}
+            </Text>
           </View>
         ))}
         {poss ? (
-          <View style={{ marginTop: 14 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-              <Text style={{ fontSize: 10.5, color: t.faint, ...mono(700) }}>POSS {poss[0]}%</Text>
-              <Text style={{ fontSize: 10.5, color: t.faint, ...mono(700) }}>{poss[1]}% POSS</Text>
+          <View className="mt-3.5">
+            <View className="mb-[5px] flex-row justify-between">
+              <Text className="font-mono-bold text-[10.5px] text-faint">POSS {poss[0]}%</Text>
+              <Text className="font-mono-bold text-[10.5px] text-faint">{poss[1]}% POSS</Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 3, height: 5 }}>
-              <View style={{ flex: poss[0]!, borderRadius: 3, backgroundColor: t.brandText }} />
-              <View style={{ flex: poss[1]!, borderRadius: 3, backgroundColor: t.surface3 }} />
+            <View className="h-[5px] flex-row gap-[3px]">
+              <View className="rounded-[3px] bg-brand-text" style={{ flex: poss[0]! }} />
+              <View className="rounded-[3px] bg-surface3" style={{ flex: poss[1]! }} />
             </View>
           </View>
         ) : null}
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingVertical: 11,
-          paddingHorizontal: 16,
-          borderTopWidth: 1,
-          borderTopColor: t.line,
-          backgroundColor: t.surface2,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 }}>
+      <View className="flex-row items-center justify-between border-t border-t-line bg-surface2 px-4 py-[11px]">
+        <View className="shrink flex-row items-center gap-1.5">
           <Icon name="pin" size={13} color={t.faint} />
-          <Text numberOfLines={1} style={{ fontSize: 11.5, color: t.muted, ...f(400) }}>
+          <Text numberOfLines={1} className="font-archivo text-[11.5px] text-muted">
             {v?.city}
           </Text>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <Text style={{ fontSize: 12.5, color: t.brandText, ...f(800) }}>Match Centre</Text>
+        <View className="flex-row items-center gap-1">
+          <Text className="font-archivo-extrabold text-[12.5px] text-brand-text">Match Centre</Text>
           <Icon name="chevron" size={14} sw={2.6} color={t.brandText} />
         </View>
       </View>
@@ -115,7 +98,7 @@ function LiveMatchCard({ m, mine, onOpen }: { m: MatchDoc; mine: boolean; onOpen
           {inner}
         </HeaderGradient>
       ) : (
-        <View style={{ borderRadius: 20, overflow: 'hidden', backgroundColor: t.surface, borderWidth: 1, borderColor: t.line }}>
+        <View className="overflow-hidden rounded-[20px] border border-line bg-surface">
           {inner}
         </View>
       )}
@@ -124,37 +107,26 @@ function LiveMatchCard({ m, mine, onOpen }: { m: MatchDoc; mine: boolean; onOpen
 }
 
 function NextKickoff({ m, onOpen }: { m: MatchDoc; onOpen: (id: string) => void }) {
-  const { t } = useTheme();
   return (
     <Pressable
       onPress={() => onOpen(m.matchId)}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingVertical: 11,
-        paddingHorizontal: 14,
-        borderRadius: 14,
-        backgroundColor: t.surface,
-        borderWidth: 1,
-        borderColor: t.line,
-      }}
+      className="flex-row items-center gap-3 rounded-[14px] border border-line bg-surface px-3.5 py-[11px]"
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View className="flex-row items-center">
         <Flag code={m.home} size={26} />
         <Flag code={m.away} size={26} style={{ marginLeft: -8 }} />
       </View>
-      <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: 13.5, color: t.text, ...f(700) }}>
-          {m.home} <Text style={{ color: t.faint, ...f(600) }}>v</Text> {m.away}
+      <View className="min-w-0 flex-1">
+        <Text className="font-archivo-bold text-[13.5px] text-ink">
+          {m.home} <Text className="font-archivo-semibold text-faint">v</Text> {m.away}
         </Text>
-        <Text style={{ fontSize: 11, color: t.faint, ...f(400) }}>
+        <Text className="font-archivo text-[11px] text-faint">
           {m.stage} · {venueFor(m.venueId)?.city}
         </Text>
       </View>
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={{ fontSize: 13, color: t.brandText, ...mono(700) }}>{countdown(m.kickoff)}</Text>
-        <Text style={{ fontSize: 10.5, color: t.faint, ...mono(400) }}>{relDay(m.kickoff).toUpperCase()}</Text>
+      <View className="items-end">
+        <Text className="font-mono-bold text-[13px] text-brand-text">{countdown(m.kickoff)}</Text>
+        <Text className="font-mono text-[10.5px] text-faint">{relDay(m.kickoff).toUpperCase()}</Text>
       </View>
     </Pressable>
   );
@@ -183,55 +155,47 @@ export function LiveScreen() {
   const myTeamLive = liveMatches.some((m) => isTeamMatch(m, team));
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
+    <View className="flex-1 bg-canvas">
       <HeaderGradient style={{ paddingTop: insets.top + 10, paddingHorizontal: 20, paddingBottom: 18 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 27, color: t.text, letterSpacing: -0.6, ...f(800) }}>Live</Text>
+        <View className="flex-row items-center justify-between">
+          <Text className="font-archivo-extrabold text-[27px] tracking-[-0.6px] text-ink">Live</Text>
           {liveMatches.length > 0 ? (
-            <Pill bg={t.live} color="#fff" fs={10} icon={<LiveDot size={6} color="#fff" />}>
+            <Pill className="bg-live" textClassName="text-white" fs={10} icon={<LiveDot size={6} color="#fff" />}>
               {liveMatches.length} LIVE NOW
             </Pill>
           ) : (
-            <Pill fs={10} bg={t.surface} color={t.muted} borderColor={t.line}>
+            <Pill fs={10} className="border border-line bg-surface" textClassName="text-muted">
               NONE LIVE
             </Pill>
           )}
         </View>
         {liveMatches.length > 1 ? (
-          <Text style={{ marginTop: 8, fontSize: 13, color: t.muted, ...f(400) }}>
+          <Text className="mt-2 font-archivo text-[13px] text-muted">
             {liveMatches.length} matches in play — tap any to open its Match Centre.
           </Text>
         ) : null}
       </HeaderGradient>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }}>
+      <ScrollView className="flex-1" contentContainerClassName="p-4 pb-6">
         {liveMatches.length > 0 ? (
-          <View style={{ gap: 14 }}>
+          <View className="gap-3.5">
             {liveMatches.map((m) => (
               <LiveMatchCard key={m.matchId} m={m} mine={isTeamMatch(m, team)} onOpen={onOpen} />
             ))}
 
             {myNext && !myTeamLive ? (
-              <View style={{ marginTop: 4 }}>
+              <View className="mt-1">
                 <SectionTitle>{teamFor(team)?.name} are up next</SectionTitle>
                 <Card pad={16} onPress={() => onOpen(myNext.matchId)}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 16,
-                      marginBottom: 16,
-                    }}
-                  >
-                    <View style={{ alignItems: 'center', gap: 7 }}>
+                  <View className="mb-4 flex-row items-center justify-center gap-4">
+                    <View className="items-center gap-[7px]">
                       <Flag code={myNext.home} size={40} radius={12} />
-                      <Text style={{ fontSize: 12, color: t.text, ...f(800) }}>{myNext.home}</Text>
+                      <Text className="font-archivo-extrabold text-[12px] text-ink">{myNext.home}</Text>
                     </View>
-                    <Text style={{ fontSize: 13, color: t.faint, ...mono(700) }}>VS</Text>
-                    <View style={{ alignItems: 'center', gap: 7 }}>
+                    <Text className="font-mono-bold text-[13px] text-faint">VS</Text>
+                    <View className="items-center gap-[7px]">
                       <Flag code={myNext.away} size={40} radius={12} />
-                      <Text style={{ fontSize: 12, color: t.text, ...f(800) }}>{myNext.away}</Text>
+                      <Text className="font-archivo-extrabold text-[12px] text-ink">{myNext.away}</Text>
                     </View>
                   </View>
                   <LiveCountdown target={myNext.kickoff} size="sm" />
@@ -241,68 +205,37 @@ export function LiveScreen() {
           </View>
         ) : (
           // ── EMPTY STATE ──────────────────────────────────────────
-          <View style={{ gap: 20 }}>
-            <View style={{ alignItems: 'center', paddingTop: 20, paddingHorizontal: 16, paddingBottom: 6 }}>
-              <View
-                style={{
-                  width: 76,
-                  height: 76,
-                  borderRadius: 38,
-                  backgroundColor: t.surface,
-                  borderWidth: 1,
-                  borderColor: t.line,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: 16,
-                }}
-              >
+          <View className="gap-5">
+            <View className="items-center px-4 pb-1.5 pt-5">
+              <View className="mb-4 h-[76px] w-[76px] items-center justify-center rounded-full border border-line bg-surface">
                 <Icon name="whistle" size={34} color={t.faint} />
               </View>
-              <Text style={{ fontSize: 20, color: t.text, marginBottom: 6, ...f(800) }}>No matches live right now</Text>
-              <Text style={{ fontSize: 14, color: t.muted, maxWidth: 280, lineHeight: 20, textAlign: 'center', ...f(400) }}>
+              <Text className="mb-1.5 font-archivo-extrabold text-[20px] text-ink">No matches live right now</Text>
+              <Text className="max-w-[280px] text-center font-archivo text-[14px] leading-[20px] text-muted">
                 The pitch is quiet — but not for long. Here&apos;s your next kick-off.
               </Text>
             </View>
 
             {myNext ? (
               <HeaderGradient style={{ borderRadius: 22, padding: 20, borderWidth: 1, borderColor: t.brandLine }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                    marginBottom: 16,
-                  }}
-                >
+                <View className="mb-4 flex-row items-center justify-center gap-1.5">
                   <Icon name="star" size={13} color={t.brandText} fill={t.brandText} sw={1} />
-                  <Text
-                    style={{ fontSize: 11, color: t.brandText, letterSpacing: 1, textTransform: 'uppercase', ...mono(700) }}
-                  >
+                  <Text className="font-mono-bold text-[11px] uppercase tracking-[1px] text-brand-text">
                     {teamFor(team)?.name} kick off in
                   </Text>
                 </View>
                 <LiveCountdown target={myNext.kickoff} size="lg" />
                 <Pressable
                   onPress={() => onOpen(myNext.matchId)}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 12,
-                    marginTop: 18,
-                    paddingTop: 16,
-                    borderTopWidth: 1,
-                    borderTopColor: t.line,
-                  }}
+                  className="mt-[18px] flex-row items-center justify-center gap-3 border-t border-t-line pt-4"
                 >
                   <Flag code={myNext.home} size={28} radius={8} />
-                  <Text style={{ fontSize: 15, color: t.text, ...f(800) }}>{myNext.home}</Text>
-                  <Text style={{ fontSize: 12, color: t.faint, ...mono(700) }}>VS</Text>
-                  <Text style={{ fontSize: 15, color: t.text, ...f(800) }}>{myNext.away}</Text>
+                  <Text className="font-archivo-extrabold text-[15px] text-ink">{myNext.home}</Text>
+                  <Text className="font-mono-bold text-[12px] text-faint">VS</Text>
+                  <Text className="font-archivo-extrabold text-[15px] text-ink">{myNext.away}</Text>
                   <Flag code={myNext.away} size={28} radius={8} />
                 </Pressable>
-                <Text style={{ textAlign: 'center', marginTop: 10, fontSize: 11.5, color: t.muted, ...f(400) }}>
+                <Text className="mt-2.5 text-center font-archivo text-[11.5px] text-muted">
                   {dayLabel(myNext.kickoff)} · {timeLabel(myNext.kickoff)} · {venueFor(myNext.venueId)?.city}
                 </Text>
               </HeaderGradient>
@@ -312,7 +245,7 @@ export function LiveScreen() {
               <SectionTitle action="Full schedule" onAction={() => router.push('/matches')}>
                 Next Kick-offs
               </SectionTitle>
-              <View style={{ gap: 9 }}>
+              <View className="gap-[9px]">
                 {upcomingSoon.map((m) => (
                   <NextKickoff key={m.matchId} m={m} onOpen={onOpen} />
                 ))}
