@@ -19,7 +19,6 @@ import {
 } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../providers/ThemeProvider';
-import { f, mono } from '../theme/fonts';
 import { Card, Flag, Icon, LiveDot, Pill, SectionTitle } from '../components/ui';
 import { LiveChip, MatchRow, useGoalFlash } from '../components/matchui';
 import { HeaderGradient } from '../components/HeaderGradient';
@@ -45,99 +44,73 @@ function FavHero({ matches, team, onOpen }: { matches: MatchDoc[]; team: string;
       <HeaderGradient
         style={{ borderRadius: 22, padding: 18, overflow: 'hidden', borderWidth: 1, borderColor: t.brandLine }}
       >
-        <View
-          style={{
-            position: 'absolute',
-            top: -50,
-            right: -30,
-            width: 180,
-            height: 180,
-            borderRadius: 90,
-            backgroundColor: t.brand,
-            opacity: 0.16,
-          }}
-        />
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+        <View className="absolute -right-[30px] -top-[50px] h-[180px] w-[180px] rounded-full bg-brand opacity-[0.16]" />
+        <View className="mb-4 flex-row items-center justify-between">
+          <View className="flex-row items-center gap-[7px]">
             <Icon name="star" size={14} color={t.brandText} fill={t.brandText} sw={1} />
-            <Text style={{ fontSize: 11, letterSpacing: 1.2, color: t.brandText, textTransform: 'uppercase', ...mono(700) }}>
+            <Text className="font-mono-bold text-[11px] uppercase tracking-[1.2px] text-brand-text">
               Your Team · {tm.name}
             </Text>
           </View>
           {live ? (
-            <Pill bg={t.live} color="#fff" fs={10} icon={<LiveDot size={6} color="#fff" />}>
+            <Pill className="bg-live" textClassName="text-white" fs={10} icon={<LiveDot size={6} color="#fff" />}>
               LIVE {m.minute}&apos;
             </Pill>
           ) : fin ? (
             <Pill fs={10}>FULL TIME</Pill>
           ) : (
-            <Pill bg={t.brandSoft} color={t.brandText} fs={10} icon={<Icon name="clock" size={11} color={t.brandText} />}>
+            <Pill className="bg-brand-soft" textClassName="text-brand-text" fs={10} icon={<Icon name="clock" size={11} color={t.brandText} />}>
               {countdown(m.kickoff) ?? 'SOON'}
             </Pill>
           )}
         </View>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <View style={{ flex: 1, alignItems: 'center', gap: 9 }}>
+        <View className="flex-row items-center justify-between gap-2">
+          <View className="flex-1 items-center gap-[9px]">
             <Flag code={team} size={50} radius={14} />
-            <Text style={{ fontSize: 13, color: t.text, letterSpacing: 0.2, ...f(800) }}>{tm.code}</Text>
+            <Text className="font-archivo-extrabold text-[13px] tracking-[0.2px] text-ink">{tm.code}</Text>
           </View>
-          <View style={{ alignItems: 'center', minWidth: 78 }}>
+          <View className="min-w-[78px] items-center">
             {up ? (
               <>
-                <Text style={{ fontSize: 30, color: t.text, ...f(800) }}>{timeLabel(m.kickoff).split(' ')[0]}</Text>
-                <Text style={{ fontSize: 11, color: t.muted, ...mono(700) }}>
+                <Text className="font-archivo-extrabold text-[30px] text-ink">{timeLabel(m.kickoff).split(' ')[0]}</Text>
+                <Text className="font-mono-bold text-[11px] text-muted">
                   {relDay(m.kickoff).toUpperCase()}
                 </Text>
               </>
             ) : (
               <>
                 <Text
-                  style={{
-                    fontSize: 40,
-                    lineHeight: 42,
-                    color: goalFlash ? t.live : t.text,
-                    fontVariant: ['tabular-nums'],
-                    ...f(800),
-                  }}
+                  className={`font-archivo-extrabold text-[40px] leading-[42px] ${
+                    goalFlash ? 'text-live' : 'text-ink'
+                  }`}
+                  style={{ fontVariant: ['tabular-nums'] }}
                 >
                   {myScore}
-                  <Text style={{ color: t.faint }}> : </Text>
+                  <Text className="text-faint"> : </Text>
                   {opScore}
                 </Text>
                 {live ? (
-                  <Text style={{ fontSize: 10.5, color: t.live, marginTop: 4, ...mono(700) }}>{m.minute}&apos; LIVE</Text>
+                  <Text className="mt-1 font-mono-bold text-[10.5px] text-live">{m.minute}&apos; LIVE</Text>
                 ) : null}
               </>
             )}
           </View>
-          <View style={{ flex: 1, alignItems: 'center', gap: 9 }}>
+          <View className="flex-1 items-center gap-[9px]">
             <Flag code={opp} size={50} radius={14} />
-            <Text style={{ fontSize: 13, color: t.text, letterSpacing: 0.2, ...f(800) }}>{opp}</Text>
+            <Text className="font-archivo-extrabold text-[13px] tracking-[0.2px] text-ink">{opp}</Text>
           </View>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: 16,
-            paddingTop: 14,
-            borderTopWidth: 1,
-            borderTopColor: t.line,
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 }}>
+        <View className="mt-4 flex-row items-center justify-between border-t border-t-line pt-3.5">
+          <View className="shrink flex-row items-center gap-1.5">
             <Icon name="pin" size={13} color={t.faint} />
-            <Text numberOfLines={1} style={{ fontSize: 12, color: t.muted, ...f(500) }}>
+            <Text numberOfLines={1} className="font-archivo-medium text-[12px] text-muted">
               {v ? `${v.name}, ${v.city}` : ''}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-            <Text style={{ fontSize: 12.5, color: t.brandText, ...f(800) }}>
+          <View className="flex-row items-center gap-1">
+            <Text className="font-archivo-extrabold text-[12.5px] text-brand-text">
               {live ? 'Match Centre' : up ? 'Preview' : 'Report'}
             </Text>
             <Icon name="chevron" size={14} sw={2.6} color={t.brandText} />
@@ -165,31 +138,18 @@ function QuickAction({
   return (
     <Pressable
       onPress={onPress}
-      style={{
-        flex: 1,
-        gap: 9,
-        padding: 14,
-        backgroundColor: t.surface,
-        borderWidth: 1,
-        borderColor: t.line,
-        borderRadius: 16,
-      }}
+      className="flex-1 gap-[9px] rounded-2xl border border-line bg-surface p-3.5"
     >
       <View
-        style={{
-          width: 38,
-          height: 38,
-          borderRadius: 11,
-          backgroundColor: accent ? t.brandSoft : t.surface2,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+        className={`h-[38px] w-[38px] items-center justify-center rounded-[11px] ${
+          accent ? 'bg-brand-soft' : 'bg-surface2'
+        }`}
       >
         <Icon name={icon} size={20} color={accent ? t.brandText : t.muted} />
       </View>
       <View>
-        <Text style={{ fontSize: 14, color: t.text, ...f(800) }}>{label}</Text>
-        <Text style={{ fontSize: 11.5, color: t.faint, ...f(400) }}>{sub}</Text>
+        <Text className="font-archivo-extrabold text-[14px] text-ink">{label}</Text>
+        <Text className="font-archivo text-[11.5px] text-faint">{sub}</Text>
       </View>
     </Pressable>
   );
@@ -207,43 +167,31 @@ function FavNextCard({ m, team, onOpen }: { m: MatchDoc; team: string; onOpen: (
       <SectionTitle>Next for {teamFor(team)?.name}</SectionTitle>
       <Pressable onPress={() => onOpen(m.matchId)}>
         <HeaderGradient style={{ borderRadius: 16, padding: 14, overflow: 'hidden', borderWidth: 1, borderColor: t.brandLine }}>
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}
-          >
-            <Text style={{ fontSize: 11.5, color: t.muted, letterSpacing: 0.4, ...mono(700) }}>
+          <View className="mb-3 flex-row items-center justify-between">
+            <Text className="font-mono-bold text-[11.5px] tracking-[0.4px] text-muted">
               {relDay(m.kickoff).toUpperCase()} · {timeLabel(m.kickoff)}
             </Text>
             {cd ? (
-              <Pill bg={t.brandSoft} color={t.brandText} fs={10} icon={<Icon name="clock" size={11} color={t.brandText} />}>
+              <Pill className="bg-brand-soft" textClassName="text-brand-text" fs={10} icon={<Icon name="clock" size={11} color={t.brandText} />}>
                 {cd}
               </Pill>
             ) : null}
-            <Text style={{ fontSize: 10.5, color: t.faint, ...mono(700) }}>{isHome ? 'HOME' : 'AWAY'}</Text>
+            <Text className="font-mono-bold text-[10.5px] text-faint">{isHome ? 'HOME' : 'AWAY'}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, flex: 1 }}>
+          <View className="flex-row items-center gap-3">
+            <View className="flex-1 flex-row items-center gap-[9px]">
               <Flag code={team} size={34} radius={10} />
-              <Text style={{ fontSize: 15, color: t.text, ...f(800) }}>{team}</Text>
+              <Text className="font-archivo-extrabold text-[15px] text-ink">{team}</Text>
             </View>
-            <Text style={{ fontSize: 12, color: t.faint, ...mono(700) }}>VS</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, flex: 1, justifyContent: 'flex-end' }}>
-              <Text style={{ fontSize: 15, color: t.text, ...f(800) }}>{opp}</Text>
+            <Text className="font-mono-bold text-[12px] text-faint">VS</Text>
+            <View className="flex-1 flex-row items-center justify-end gap-[9px]">
+              <Text className="font-archivo-extrabold text-[15px] text-ink">{opp}</Text>
               <Flag code={opp} size={34} radius={10} />
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 6,
-              marginTop: 12,
-              paddingTop: 11,
-              borderTopWidth: 1,
-              borderTopColor: t.line,
-            }}
-          >
+          <View className="mt-3 flex-row items-center gap-1.5 border-t border-t-line pt-[11px]">
             <Icon name="pin" size={13} color={t.faint} />
-            <Text numberOfLines={1} style={{ fontSize: 11.5, color: t.muted, ...f(400) }}>
+            <Text numberOfLines={1} className="font-archivo text-[11.5px] text-muted">
               {v ? `${v.name}, ${v.city}` : ''} · {m.stage} · MD{m.matchday}
             </Text>
           </View>
@@ -272,15 +220,15 @@ function TodaySplit({
   const dotColor = live ? t.live : color ?? t.faint;
   return (
     <View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 2, marginBottom: 9 }}>
-        {live ? <LiveDot size={6} /> : <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: dotColor }} />}
-        <Text style={{ fontSize: 11, letterSpacing: 0.8, textTransform: 'uppercase', color: dotColor, ...mono(700) }}>
+      <View className="mx-0.5 mb-[9px] flex-row items-center gap-2">
+        {live ? <LiveDot size={6} /> : <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: dotColor }} />}
+        <Text className="font-mono-bold text-[11px] uppercase tracking-[0.8px]" style={{ color: dotColor }}>
           {label}
         </Text>
-        <View style={{ flex: 1, height: 1, backgroundColor: t.line }} />
-        <Text style={{ fontSize: 10.5, color: t.faint, ...mono(700) }}>{matches.length}</Text>
+        <View className="h-px flex-1 bg-line" />
+        <Text className="font-mono-bold text-[10.5px] text-faint">{matches.length}</Text>
       </View>
-      <View style={{ gap: 9 }}>
+      <View className="gap-[9px]">
         {matches.map((m) => (
           <MatchRow key={m.matchId} match={m} onOpen={onOpen} showGroup />
         ))}
@@ -320,70 +268,28 @@ export function HomeScreen() {
   const tz = tzLabel();
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ paddingBottom: 24 }}>
+    <ScrollView className="flex-1 bg-canvas" contentContainerClassName="pb-6">
       {/* header */}
       <HeaderGradient style={{ paddingTop: insets.top + 10, paddingHorizontal: 20, paddingBottom: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View className="flex-row items-center justify-between">
           <View>
-            <Text style={{ fontSize: 11, color: t.brandText, letterSpacing: 1, textTransform: 'uppercase', ...mono(700) }}>
+            <Text className="font-mono-bold text-[11px] uppercase tracking-[1px] text-brand-text">
               {dayLabel(new Date())} · World Cup 2026
             </Text>
-            <Text style={{ fontSize: 25, color: t.text, marginTop: 3, letterSpacing: -0.5, ...f(800) }}>
+            <Text className="mt-[3px] font-archivo-extrabold text-[25px] tracking-[-0.5px] text-ink">
               Hi {name.split(' ')[0]}, Welcome
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View
-              style={{
-                backgroundColor: t.surface,
-                borderWidth: 1,
-                borderColor: t.line,
-                width: 42,
-                height: 42,
-                borderRadius: 13,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+          <View className="flex-row items-center gap-3">
+            <View className="h-[42px] w-[42px] items-center justify-center rounded-[13px] border border-line bg-surface">
               <Icon name="bell" size={20} color={t.text} />
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 9,
-                  right: 11,
-                  width: 7,
-                  height: 7,
-                  borderRadius: 4,
-                  backgroundColor: t.live,
-                  borderWidth: 1.5,
-                  borderColor: t.surface,
-                }}
-              />
+              <View className="absolute right-[11px] top-[9px] h-[7px] w-[7px] rounded-full border-[1.5px] border-surface bg-live" />
             </View>
             <Pressable onPress={() => router.push('/profile')}>
-              <View
-                style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 21,
-                  backgroundColor: t.brand,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ fontSize: 17, color: t.brandInk, ...f(800) }}>{name[0]?.toUpperCase()}</Text>
+              <View className="h-[42px] w-[42px] items-center justify-center rounded-full bg-brand">
+                <Text className="font-archivo-extrabold text-[17px] text-brand-ink">{name[0]?.toUpperCase()}</Text>
               </View>
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: -2,
-                  right: -2,
-                  borderWidth: 2,
-                  borderColor: t.bg,
-                  borderRadius: 9,
-                  overflow: 'hidden',
-                }}
-              >
+              <View className="absolute -bottom-0.5 -right-0.5 overflow-hidden rounded-[9px] border-2 border-canvas">
                 <Flag code={team} size={14} radius={0} />
               </View>
             </Pressable>
@@ -392,18 +298,18 @@ export function HomeScreen() {
       </HeaderGradient>
 
       {isLoading && matches.length === 0 ? (
-        <View style={{ paddingTop: 60, alignItems: 'center' }}>
+        <View className="items-center pt-[60px]">
           <ActivityIndicator color={t.brandText} />
         </View>
       ) : (
-        <View style={{ paddingTop: 6, paddingHorizontal: 16, gap: 22 }}>
+        <View className="gap-[22px] px-4 pt-1.5">
           {myLive ? (
             <>
               <FavHero matches={matches} team={team} onOpen={onOpen} />
               {otherLive.length > 0 ? (
                 <View>
                   <SectionTitle>Also Live</SectionTitle>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2.5">
                     {otherLive.map((m) => (
                       <LiveChip key={m.matchId} match={m} onOpen={onOpen} />
                     ))}
@@ -415,7 +321,7 @@ export function HomeScreen() {
             <>
               <View>
                 <SectionTitle>Live Now</SectionTitle>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2.5">
                   {liveMatches.map((m) => (
                     <LiveChip key={m.matchId} match={m} onOpen={onOpen} />
                   ))}
@@ -428,38 +334,30 @@ export function HomeScreen() {
           )}
 
           <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginHorizontal: 2,
-                marginBottom: 7,
-              }}
-            >
-              <Text style={{ fontSize: 13, letterSpacing: 1.4, textTransform: 'uppercase', color: t.muted, ...mono(700) }}>
+            <View className="mx-0.5 mb-[7px] flex-row items-center justify-between">
+              <Text className="font-mono-bold text-[13px] uppercase tracking-[1.4px] text-muted">
                 Today&apos;s Matches
               </Text>
               <Pressable
                 onPress={() => router.push('/matches')}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}
+                className="flex-row items-center gap-0.5"
               >
-                <Text style={{ color: t.brandText, fontSize: 12.5, ...f(700) }}>Full schedule</Text>
+                <Text className="font-archivo-bold text-[12.5px] text-brand-text">Full schedule</Text>
                 <Icon name="chevron" size={14} sw={2.4} color={t.brandText} />
               </Pressable>
             </View>
             {tz ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginHorizontal: 2, marginBottom: 13 }}>
+              <View className="mx-0.5 mb-[13px] flex-row items-center gap-1.5">
                 <Icon name="globe" size={12} color={t.faint} />
-                <Text style={{ fontSize: 11, color: t.faint, ...f(400) }}>All times in your local time · {tz}</Text>
+                <Text className="font-archivo text-[11px] text-faint">All times in your local time · {tz}</Text>
               </View>
             ) : null}
             {today.length === 0 ? (
-              <Text style={{ fontSize: 13, color: t.faint, marginHorizontal: 2, ...f(400) }}>
+              <Text className="mx-0.5 font-archivo text-[13px] text-faint">
                 No matches scheduled today.
               </Text>
             ) : (
-              <View style={{ gap: 16 }}>
+              <View className="gap-4">
                 <TodaySplit label="Live" matches={todayLive} onOpen={onOpen} live />
                 <TodaySplit label="Yet to kick off" matches={todayUpcoming} onOpen={onOpen} color={t.brandText} />
                 <TodaySplit label="Completed" matches={todayDone} onOpen={onOpen} color={t.faint} />
@@ -467,7 +365,7 @@ export function HomeScreen() {
             )}
           </View>
 
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View className="flex-row gap-2.5">
             <QuickAction icon="trophy" label="Group Tables" sub="All 12 groups" accent onPress={() => router.push('/groups')} />
             <QuickAction icon="chart" label="Golden Boot" sub="Top scorers" onPress={() => router.push('/players')} />
           </View>
@@ -483,36 +381,24 @@ export function HomeScreen() {
                   return (
                     <View
                       key={r.code}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 11,
-                        paddingVertical: 9,
-                        paddingHorizontal: 10,
-                        borderRadius: 11,
-                        backgroundColor: mine ? t.brandSoft : 'transparent',
-                      }}
+                      className={`flex-row items-center gap-[11px] rounded-[11px] px-2.5 py-[9px] ${
+                        mine ? 'bg-brand-soft' : 'bg-transparent'
+                      }`}
                     >
-                      <Text style={{ width: 18, fontSize: 13, color: i < 2 ? t.brandText : t.faint, ...mono(700) }}>
+                      <Text className={`w-[18px] font-mono-bold text-[13px] ${i < 2 ? 'text-brand-text' : 'text-faint'}`}>
                         {i + 1}
                       </Text>
                       <Flag code={r.code} size={22} />
-                      <Text style={{ flex: 1, fontSize: 13.5, color: t.text, ...f(mine ? 800 : 600) }}>
+                      <Text className={`flex-1 text-[13.5px] text-ink ${mine ? 'font-archivo-extrabold' : 'font-archivo-semibold'}`}>
                         {teamFor(r.code)?.name}
                       </Text>
                       {r.live ? <LiveDot size={5} /> : null}
-                      <Text style={{ fontSize: 11.5, color: t.faint, width: 58, textAlign: 'right', ...mono(400) }}>
+                      <Text className="w-[58px] text-right font-mono text-[11.5px] text-faint">
                         {r.W}-{r.D}-{r.L}
                       </Text>
                       <Text
-                        style={{
-                          fontSize: 15,
-                          color: t.text,
-                          width: 20,
-                          textAlign: 'right',
-                          fontVariant: ['tabular-nums'],
-                          ...f(800),
-                        }}
+                        className="w-5 text-right font-archivo-extrabold text-[15px] text-ink"
+                        style={{ fontVariant: ['tabular-nums'] }}
                       >
                         {r.Pts}
                       </Text>

@@ -31,7 +31,7 @@ function RootNavigator() {
 
   if (status === 'loading' || !fontsLoaded) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: t.bg }}>
+      <View className="flex-1 items-center justify-center bg-canvas">
         <ActivityIndicator color={t.brandText} />
       </View>
     );
