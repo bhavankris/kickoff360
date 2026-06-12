@@ -1,17 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Text, View } from 'react-native';
 import type { Timestamp } from 'firebase/firestore';
-import { countdownParts } from '@repo/core';
+import { countdownParts, useNow } from '@repo/core';
 
 /** Ticking countdown to a kick-off (days/hrs/min, hrs/min/sec on the final day). */
 export function LiveCountdown({ target, size = 'lg' }: { target: Timestamp | Date; size?: 'lg' | 'sm' }) {
-  const [, force] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => force((n) => n + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const units = countdownParts(target);
+  const now = useNow(1000);
+  const units = countdownParts(target, now);
   const big = size === 'lg';
   return (
     <View className={`flex-row justify-center ${big ? 'gap-2.5' : 'gap-[7px]'}`}>

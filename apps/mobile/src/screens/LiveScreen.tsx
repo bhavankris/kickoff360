@@ -11,6 +11,7 @@ import {
   timeLabel,
   useMatchDetail,
   useMatches,
+  useNow,
   venueFor,
   type MatchDoc,
 } from '@repo/core';
@@ -41,7 +42,8 @@ function LiveMatchCard({ m, mine, onOpen }: { m: MatchDoc; mine: boolean; onOpen
           ) : null}
         </View>
         <Pill fs={10} textClassName="text-faint">
-          {m.stage} · MD{m.matchday}
+          {m.stage}
+          {m.matchday != null ? ` · MD${m.matchday}` : ''}
         </Pill>
       </View>
       <View className="px-4 pb-3.5 pt-4">
@@ -107,6 +109,7 @@ function LiveMatchCard({ m, mine, onOpen }: { m: MatchDoc; mine: boolean; onOpen
 }
 
 function NextKickoff({ m, onOpen }: { m: MatchDoc; onOpen: (id: string) => void }) {
+  const now = useNow();
   return (
     <Pressable
       onPress={() => onOpen(m.matchId)}
@@ -125,7 +128,7 @@ function NextKickoff({ m, onOpen }: { m: MatchDoc; onOpen: (id: string) => void 
         </Text>
       </View>
       <View className="items-end">
-        <Text className="font-mono-bold text-[13px] text-brand-text">{countdown(m.kickoff)}</Text>
+        <Text className="font-mono-bold text-[13px] text-brand-text">{countdown(m.kickoff, now)}</Text>
         <Text className="font-mono text-[10.5px] text-faint">{relDay(m.kickoff).toUpperCase()}</Text>
       </View>
     </Pressable>

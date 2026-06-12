@@ -390,7 +390,8 @@ export function MatchDetailScreen() {
             <Icon name="back" size={20} color={t.text} />
           </Pressable>
           <Pill className="bg-glass" textClassName="text-muted" fs={10}>
-            {m.stage} · MD{m.matchday}
+            {m.stage}
+            {m.matchday != null ? ` · MD${m.matchday}` : ''}
           </Pill>
           <View className="h-[38px] w-[38px] items-center justify-center rounded-xl border border-glass-line bg-glass">
             <Icon name="share" size={18} color={t.text} />

@@ -15,6 +15,7 @@ import {
   venueFor,
   favMatch,
   useMatches,
+  useNow,
   type MatchDoc,
 } from '@repo/core';
 import { useAuth } from '../providers/AuthProvider';
@@ -26,6 +27,7 @@ import { HeaderGradient } from '../components/HeaderGradient';
 /** Hero card for the favourite team's most relevant match (live/upcoming/result). */
 function FavHero({ matches, team, onOpen }: { matches: MatchDoc[]; team: string; onOpen: (id: string) => void }) {
   const { t } = useTheme();
+  const now = useNow();
   const m = favMatch(matches, team);
   const flashing = useGoalFlash(m?.lastGoal ?? null);
   if (!m) return null;
@@ -60,7 +62,7 @@ function FavHero({ matches, team, onOpen }: { matches: MatchDoc[]; team: string;
             <Pill fs={10}>FULL TIME</Pill>
           ) : (
             <Pill className="bg-brand-soft" textClassName="text-brand-text" fs={10} icon={<Icon name="clock" size={11} color={t.brandText} />}>
-              {countdown(m.kickoff) ?? 'SOON'}
+              {countdown(m.kickoff, now) ?? 'SOON'}
             </Pill>
           )}
         </View>
@@ -158,10 +160,11 @@ function QuickAction({
 /** Single "next" fixture for the user's team — sits below the live section. */
 function FavNextCard({ m, team, onOpen }: { m: MatchDoc; team: string; onOpen: (id: string) => void }) {
   const { t } = useTheme();
+  const now = useNow();
   const opp = m.home === team ? m.away : m.home;
   const isHome = m.home === team;
   const v = venueFor(m.venueId);
-  const cd = countdown(m.kickoff);
+  const cd = countdown(m.kickoff, now);
   return (
     <View>
       <SectionTitle>Next for {teamFor(team)?.name}</SectionTitle>
@@ -192,7 +195,8 @@ function FavNextCard({ m, team, onOpen }: { m: MatchDoc; team: string; onOpen: (
           <View className="mt-3 flex-row items-center gap-1.5 border-t border-t-line pt-[11px]">
             <Icon name="pin" size={13} color={t.faint} />
             <Text numberOfLines={1} className="font-archivo text-[11.5px] text-muted">
-              {v ? `${v.name}, ${v.city}` : ''} · {m.stage} · MD{m.matchday}
+              {v ? `${v.name}, ${v.city}` : ''} · {m.stage}
+              {m.matchday != null ? ` · MD${m.matchday}` : ''}
             </Text>
           </View>
         </HeaderGradient>

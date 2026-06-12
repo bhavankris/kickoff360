@@ -5,26 +5,27 @@
   "engines": { "node": "22" },
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc -w",
+    "build": "tsc --noEmit && node esbuild.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "serve": "npm run build && firebase emulators:start --only functions,firestore,auth",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "seed": "node scripts/seed-demo.mjs",
-    "simulate": "node scripts/simulate-live.mjs"
+    "simulate": "node scripts/simulate-live.mjs",
+    "reproject": "node scripts/reproject.mjs"
   },
   "dependencies": {
     "@repo/core": "workspace:*",
     "firebase-admin": "^13.0.0",
     "firebase-functions": "^7.2.0",
-    "undici": "^6.0.0",
-    "zod": "^3.23.0"
+    "undici": "^6.0.0"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
     "@types/node": "^22.0.0",
-    "typescript": "^5.5.0"
+    "esbuild": "^0.25.0",
+    "typescript": "^5.5.0",
+    "zod": "^3.23.0"
   }
 }

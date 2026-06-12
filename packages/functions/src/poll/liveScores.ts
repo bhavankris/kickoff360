@@ -1,8 +1,9 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { defineSecret } from 'firebase-functions/params';
-import { admin, db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON } from '../lib/admin.js';
+import { db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON, FieldValue, Timestamp } from '../lib/admin.js';
 import { apiSports } from '../lib/apiSports.js';
 import { mapFixture, type RawFixture } from '../lib/map.js';
+import { projectFixture } from '../lib/project.js';
 
 const API_SPORTS_KEY = defineSecret('API_SPORTS_KEY');
 
@@ -31,6 +32,16 @@ export const pollLiveScores = onSchedule(
       season: DEFAULT_SEASON,
     });
 
+    // Previous projected scores, so a score change can stamp lastGoal
+    // (drives the goal-toast / score-flash UI). The detail poller will
+    // back-fill the scorer's name from the events feed later.
+    const prevSnaps = raw.length
+      ? await db.getAll(...raw.map((r) => db.doc(`matches/${r.fixture.id}`)))
+      : [];
+    const prevScores = new Map(
+      prevSnaps.filter((s) => s.exists).map((s) => [s.id, s.get('score') as { home: number; away: number } | null]),
+    );
+
     const batch = db.batch();
     for (const r of raw) {
       try {
@@ -39,8 +50,37 @@ export const pollLiveScores = onSchedule(
           db.doc(`fixtures/${fixture.fixtureId}`),
           {
             ...fixture,
-            utcKickoff: admin.firestore.Timestamp.fromDate(kickoff),
-            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            utcKickoff: Timestamp.fromDate(kickoff),
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
+
+        const match = projectFixture(fixture);
+        if (!match) continue;
+
+        const prev = prevScores.get(match.matchId);
+        const scoredSide =
+          match.score && prev && match.score.home > prev.home ? 'home'
+          : match.score && prev && match.score.away > prev.away ? 'away'
+          : null;
+
+        batch.set(
+          db.doc(`matches/${match.matchId}`),
+          {
+            ...match,
+            kickoff: Timestamp.fromDate(kickoff),
+            ...(scoredSide
+              ? {
+                  lastGoal: {
+                    team: match[scoredSide],
+                    player: '',
+                    minute: match.minute ?? 0,
+                    at: Timestamp.now(),
+                  },
+                }
+              : {}),
+            updatedAt: FieldValue.serverTimestamp(),
           },
           { merge: true },
         );

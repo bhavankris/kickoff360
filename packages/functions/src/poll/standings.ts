@@ -2,7 +2,7 @@ import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { defineSecret } from 'firebase-functions/params';
 import { StandingRowSchema } from '@repo/core/schemas';
 import type { StandingRow } from '@repo/core/types';
-import { admin, db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON } from '../lib/admin.js';
+import { db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON, FieldValue } from '../lib/admin.js';
 import { apiSports } from '../lib/apiSports.js';
 
 const API_SPORTS_KEY = defineSecret('API_SPORTS_KEY');
@@ -66,7 +66,7 @@ export const pollStandings = onSchedule(
         {
           groupOrLeague: groupName,
           rows,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         },
         { merge: true },
       );

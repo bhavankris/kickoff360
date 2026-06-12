@@ -12,16 +12,19 @@ export const MatchStatusSchema = z.enum(['upcoming', 'live', 'final']);
 
 export const MatchSchema = z.object({
   matchId: z.string().min(1),
-  group: z.string().length(1),
-  matchday: z.number().int().min(1),
+  group: z.string().length(1).nullable(),
+  matchday: z.number().int().min(1).nullable(),
   stage: z.string(),
   home: Alpha3,
   away: Alpha3,
-  venueId: z.string().min(1),
+  venueId: z.string().min(1).nullable(),
   status: MatchStatusSchema,
   score: z.object({ home: z.number().int(), away: z.number().int() }).nullable(),
   minute: z.number().int().nullable(),
 });
+
+/** Match shape sans server timestamps (kickoff/lastGoal/updatedAt added server-side). */
+export type Match = z.infer<typeof MatchSchema>;
 
 export const MatchEventSchema = z.object({
   minute: z.number().int(),

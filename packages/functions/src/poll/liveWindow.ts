@@ -1,5 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
-import { admin, db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON } from '../lib/admin.js';
+import { db, DEFAULT_LEAGUE_ID, DEFAULT_SEASON, Timestamp } from '../lib/admin.js';
 
 /**
  * Daily: flip config/runtime.liveActive so pollLiveScores only runs on match days.
@@ -15,12 +15,14 @@ export const flipLiveActive = onSchedule(
     retryCount: 1,
   },
   async () => {
-    const now = admin.firestore.Timestamp.now();
-    const in24h = admin.firestore.Timestamp.fromMillis(now.toMillis() + 24 * 60 * 60 * 1000);
+    const now = Timestamp.now();
+    // -3h lower bound: a match already in progress still needs the live poller.
+    const from = Timestamp.fromMillis(now.toMillis() - 3 * 60 * 60 * 1000);
+    const in24h = Timestamp.fromMillis(now.toMillis() + 24 * 60 * 60 * 1000);
 
     const snap = await db
       .collection('fixtures')
-      .where('utcKickoff', '>=', now)
+      .where('utcKickoff', '>=', from)
       .where('utcKickoff', '<=', in24h)
       .limit(1)
       .get();

@@ -6,6 +6,8 @@ export interface RawFixture {
     id: number;
     date: string;
     status: { short: string; elapsed: number | null };
+    venue?: { id: number | null; name: string | null; city: string | null } | null;
+    referee?: string | null;
   };
   league: { id: number; season: number; round: string };
   teams: {
@@ -23,6 +25,10 @@ export function mapFixture(r: RawFixture): { fixture: Fixture; kickoff: Date } {
     teams: { home: r.teams.home, away: r.teams.away },
     goals: r.goals,
     league: { id: r.league.id, season: r.league.season, round: r.league.round },
+    venue: r.fixture.venue
+      ? { id: r.fixture.venue.id, name: r.fixture.venue.name, city: r.fixture.venue.city }
+      : null,
+    referee: r.fixture.referee ?? null,
   });
   const kickoff = new Date(r.fixture.date);
   if (Number.isNaN(kickoff.getTime())) {

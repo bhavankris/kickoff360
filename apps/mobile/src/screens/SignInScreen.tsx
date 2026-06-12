@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Line, Path, Rect } from 'react-native-svg';
 import { authAdapter } from '../platform/signIn';
+import { devSignIn } from '../lib/devAuth';
 import { useTheme } from '../providers/ThemeProvider';
 import { Icon } from '../components/ui';
 
@@ -44,6 +45,18 @@ export function SignInScreen() {
       // AuthProvider's onAuthStateChanged + the root layout handle navigation.
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Sign-in failed');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDevSignIn() {
+    setBusy(true);
+    setError(null);
+    try {
+      await devSignIn();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Dev sign-in failed');
     } finally {
       setBusy(false);
     }
@@ -92,6 +105,27 @@ export function SignInScreen() {
             </>
           )}
         </Pressable>
+        {__DEV__ ? (
+          <Pressable
+            onPress={onDevSignIn}
+            disabled={busy}
+            style={{
+              height: 52,
+              borderRadius: 16,
+              marginTop: 12,
+              borderWidth: 1,
+              borderColor: t.line2,
+              borderStyle: 'dashed',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 10,
+            }}
+          >
+            <Icon name="flame" size={16} color={t.muted} sw={1.6} />
+            <Text className="font-archivo-bold text-[14px] text-muted">Dev: continue without Google</Text>
+          </Pressable>
+        ) : null}
         {error ? (
           <Text className="mt-3 text-center font-archivo-semibold text-[13px] text-live">{error}</Text>
         ) : null}

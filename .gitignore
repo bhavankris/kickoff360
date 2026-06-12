@@ -38,6 +38,8 @@ ui-debug.log
 .env*.local
 **/.env
 !**/.env.example
+**/.secret.local
+packages/functions/.deploy/
 
 # Logs
 npm-debug.*

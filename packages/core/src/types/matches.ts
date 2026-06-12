@@ -13,17 +13,17 @@ export type MatchStatus = 'upcoming' | 'live' | 'final';
 /** `matches/{matchId}` — one doc per fixture, written only by the backend. */
 export interface MatchDoc {
   matchId: string;
-  /** Group letter A–L. */
-  group: string;
-  /** Group-stage matchday 1–3. */
-  matchday: number;
-  /** Display stage, e.g. "Group D". */
+  /** Group letter A–L; null for knockout rounds. */
+  group: string | null;
+  /** Group-stage matchday 1–3; null for knockout rounds. */
+  matchday: number | null;
+  /** Display stage, e.g. "Group D" or "Round of 32". */
   stage: string;
   /** Alpha-3 codes. */
   home: string;
   away: string;
-  /** Key into VENUES. */
-  venueId: string;
+  /** Key into VENUES; null when the venue is unknown/TBD. */
+  venueId: string | null;
   kickoff: Timestamp;
   status: MatchStatus;
   /** Null until kick-off. */
