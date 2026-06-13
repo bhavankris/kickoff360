@@ -36,6 +36,10 @@ Query), so goals land on every screen in real time.
 
 ## Develop
 
+> **New machine?** Follow the full step‑by‑step [End‑to‑End Setup guide
+> (Windows & macOS)](docs/SETUP.md) — tooling, env, Firebase/Auth, run modes, and
+> troubleshooting. The quickstart below assumes the prerequisites are already installed.
+
 ```bash
 pnpm install                 # from repo root
 pnpm typecheck               # turbo: builds core, then typechecks everything
@@ -74,9 +78,10 @@ search for `REPLACE_` to find them.
      `cd packages/functions && firebase functions:secrets:set API_SPORTS_KEY`.
 
 4. **EAS (builds)**
-   - `npm i -g eas-cli && cd apps/mobile && eas init && eas build:configure`.
-   - `eas build --profile development --platform android` for a dev build
-     (required — native Google Sign-In does not work in Expo Go).
+   - `pnpm add -g eas-cli && cd apps/mobile && eas init && eas build:configure`.
+   - Local build: `cd apps/mobile && pnpm run android` (needs JDK 21 + a booted AVD), or
+   - Cloud build: `eas build --profile development --platform android`
+     (a native build is required — native Google Sign-In does not work in Expo Go).
 
 5. **CI secrets** (GitHub → Settings → Secrets → Actions)
    - `EXPO_TOKEN`, `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID`
@@ -85,6 +90,7 @@ search for `REPLACE_` to find them.
 ## Global tools
 
 ```bash
-npm i -g eas-cli firebase-tools
-# Java 17+ is required for the Firebase Emulator Suite (you have 21 — fine).
+pnpm add -g eas-cli firebase-tools     # run `pnpm setup` first if you've never used a pnpm global
+# JDK 21 (HotSpot: Temurin/Corretto/Zulu) — required for the Android build AND the
+# Firebase Emulator Suite. Use 21, not 17. See docs/SETUP.md §1.3.
 ```

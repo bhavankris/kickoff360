@@ -21,7 +21,12 @@ function getGoogleSignin() {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@react-native-google-signin/google-signin') as typeof import('@react-native-google-signin/google-signin');
   if (!configured) {
-    GoogleSignin.configure({ webClientId: env.GOOGLE_WEB_CLIENT_ID });
+    // webClientId → audience of the idToken we exchange with Firebase (both platforms).
+    // iosClientId → required by the native iOS SDK to initialise (ignored on Android).
+    GoogleSignin.configure({
+      webClientId: env.GOOGLE_WEB_CLIENT_ID,
+      ...(env.GOOGLE_IOS_CLIENT_ID ? { iosClientId: env.GOOGLE_IOS_CLIENT_ID } : {}),
+    });
     configured = true;
   }
   return GoogleSignin;

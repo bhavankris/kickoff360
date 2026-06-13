@@ -56,7 +56,10 @@ export function TabBar({ state, navigation }: TabBarProps) {
                   </View>
                 ) : null}
               </View>
-              <Text className="font-archivo-extrabold text-[10px] tracking-[0.2px] text-live">
+              <Text
+                numberOfLines={1}
+                className="font-archivo-extrabold text-[10px] tracking-[0.2px] text-live"
+              >
                 {item.label}
               </Text>
             </Pressable>
@@ -64,7 +67,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
         }
 
         return (
-          <Pressable key={route.key} onPress={onPress} className="w-16 items-center gap-[5px] px-1.5 py-0.5">
+          <Pressable key={route.key} onPress={onPress} className="flex-1 items-center gap-[5px] px-0.5 py-0.5">
             <Icon
               name={item.icon}
               size={23}
@@ -73,6 +76,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
               fill={active ? t.brandSoft : 'none'}
             />
             <Text
+              numberOfLines={1}
               className={`text-[10px] tracking-[0.1px] ${
                 active ? 'font-archivo-extrabold text-brand-text' : 'font-archivo-semibold text-faint'
               }`}
