@@ -51,8 +51,33 @@ corepack prepare pnpm@9.15.4 --activate
 
 Verify (both): `node -v` → v22.x, `pnpm -v` → 9.15.4.
 
-> Prefer a version manager? `nvm-windows` on Windows, `nvm`/`fnm` on macOS. Just land on
-> Node 22.
+**Alternative: install Node via nvm.** Prefer a version manager (handy when other projects
+pin different Node versions)? Use nvm *instead of* the winget/brew step above, then run the
+Corepack lines at the end to finish.
+
+*macOS / Linux* — [nvm-sh/nvm](https://github.com/nvm-sh/nvm):
+```bash
+# the installer URL pins a version; grab the current line from the nvm README if it's stale
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
+# reopen the terminal (or `source ~/.zshrc`), then:
+nvm install 22           # installs the latest Node 22.x
+nvm use 22
+nvm alias default 22     # make 22 the default in new shells
+```
+
+*Windows* — [coreybutler/nvm-windows](https://github.com/coreybutler/nvm-windows):
+```powershell
+winget install -e --id CoreyButler.NVMforWindows
+# reopen the terminal, then:
+nvm install 22           # or pin an exact version, e.g. nvm install 22.11.0
+nvm use 22               # if this fails to create the symlink, reopen the terminal as Administrator
+```
+
+Either way, finish with Corepack so pnpm matches the lockfile exactly:
+```bash
+corepack enable
+corepack prepare pnpm@9.15.4 --activate
+```
 
 ### 1.2 Git
 
@@ -82,6 +107,13 @@ On macOS, point `JAVA_HOME` at it in `~/.zshrc` (path is vendor‑specific; for 
 export JAVA_HOME=$(/usr/libexec/java_home -v 21)
 ```
 
+On **Windows**, the `winget` Temurin package normally sets `JAVA_HOME` and adds it to
+`Path` automatically. Reopen the terminal and confirm with `echo $env:JAVA_HOME` and
+`java -version`. If `JAVA_HOME` is empty, set it manually via *Control Panel → User
+Accounts → Change my environment variables*: new **user variable** `JAVA_HOME` =
+`C:\Program Files\Eclipse Adoptium\jdk-21...-hotspot` (your real install path), then add
+`%JAVA_HOME%\bin` to **Path**. Reopen the terminal to pick it up.
+
 Verify: `java -version` should report **21.x** and a HotSpot vendor (`Temurin` / `Zulu` /
 `Corretto` — *not* "IBM J9 / OpenJ9").
 
@@ -94,6 +126,15 @@ pnpm add -g firebase-tools eas-cli
 
 (If `pnpm setup` printed PATH changes, open a new terminal first.) Verify:
 `firebase --version`, `eas --version`.
+
+Then log in to Firebase — needed for deploying rules/functions and setting secrets
+(steps [4.2](#42-deploy-security-rules--indexes), [8.1](#81-apisports-key-serverside-secret),
+[8.2](#82-build--deploy)), but **not** for the local emulator fast‑path in
+[§5](#5-fastest-run-web--emulator):
+```bash
+firebase login          # opens a browser; on a headless/remote box use: firebase login --no-localhost
+```
+(`eas login` is only needed for cloud builds — see [§7 Option B](#option-b--eas-cloud-build-no-local-android-toolchain-shareable-apk).)
 
 ### 1.5 Android Studio + emulator (only for Android on device/emulator)
 
@@ -198,6 +239,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env
 | --- | --- |
 | `EXPO_PUBLIC_FIREBASE_API_KEY` … `_APP_ID` | Firebase Console → Project settings → Your apps → **Web app** → SDK config |
 | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google Cloud → APIs & Services → Credentials → OAuth 2.0 → **Web client id** |
+| `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | *iOS native build only (optional)* — Firebase iOS app's `GoogleService‑Info.plist` (`CLIENT_ID`), or Google Cloud → Credentials → **iOS** OAuth client. Web/Android can leave it as the placeholder. |
 | `EXPO_PUBLIC_USE_FIREBASE_EMULATOR` | `1` = use local emulator suite; `0` = real project |
 | `EXPO_PUBLIC_EMULATOR_HOST` | `localhost` (use your machine's **LAN IP** for a physical device) |
 
@@ -308,9 +350,11 @@ FIRESTORE_EMULATOR_HOST=localhost:8080 pnpm --filter @repo/functions seed
 FIRESTORE_EMULATOR_HOST=localhost:8080 pnpm --filter @repo/functions simulate
 ```
 
-Windows PowerShell uses a different env syntax:
+Windows PowerShell uses a different env syntax (the `$env:` var stays set for the session,
+so the second line reuses it):
 ```powershell
 $env:FIRESTORE_EMULATOR_HOST="localhost:8080"; pnpm --filter @repo/functions seed
+pnpm --filter @repo/functions simulate     # optional: stream live goals (same session, var still set)
 ```
 
 Make sure `apps/mobile/.env` has `EXPO_PUBLIC_USE_FIREBASE_EMULATOR=1`, then:
@@ -422,6 +466,10 @@ firebase deploy --only functions
 GOOGLE_APPLICATION_CREDENTIALS=key.json GCLOUD_PROJECT=<project-id> \
   pnpm --filter @repo/functions seed
 ```
+```powershell
+# Windows PowerShell:
+$env:GOOGLE_APPLICATION_CREDENTIALS="key.json"; $env:GCLOUD_PROJECT="<project-id>"; pnpm --filter @repo/functions seed
+```
 (`key.json` = a service‑account key from Firebase Console → Project settings → Service
 accounts.)
 
@@ -447,6 +495,7 @@ Firestore → `config/runtime`) to unblock immediately; the next poll tick will 
 - [ ] `java -version` shows **21.x** on a HotSpot JVM (Temurin/Corretto/Zulu)
 - [ ] `pnpm install` && `pnpm typecheck` pass from the root
 - [ ] `apps/mobile/.env` exists and is filled in
+- [ ] (Deploy only) `firebase login` succeeded — *not needed for the emulator path*
 - [ ] `firebase emulators:start` boots Auth + Firestore + Functions
 - [ ] Seed succeeds; `pnpm web` shows the seeded match
 - [ ] Sign‑in works (dev/anonymous on emulator, Google on real project)
