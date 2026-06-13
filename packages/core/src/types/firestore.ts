@@ -30,6 +30,9 @@ export interface FixtureDoc {
   teams: { home: TeamRef; away: TeamRef };
   goals: { home: number | null; away: number | null };
   league: { id: number; season: number; round: string };
+  /** API venue ids are often null for WC2026 — match venues by name. */
+  venue: { id: number | null; name: string | null; city: string | null } | null;
+  referee: string | null;
   utcKickoff: Timestamp;
   updatedAt: Timestamp;
 }

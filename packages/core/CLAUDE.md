@@ -14,9 +14,14 @@ from the app.
 - `src/schemas`   Zod schemas (Layer 3) — derive TS types from these where possible
 - `src/api`       Firestore queries + converters (Layer 2). No UI.
 - `src/hooks`     TanStack Query hooks; `useFirestoreSubscription` ref-counts onSnapshot
-- `src/theme`     Country palette data (pure RGB triples)
+                  (`useMatches`/`useMatchDetail`/`useScorers` bridge live data into the cache)
+- `src/data`      Static WC2026 reference data: 48 teams (colors, flag bands, groups),
+                  venues, first-choice keepers
+- `src/theme`     `computeTheme(code, { mode, intensity })` — the team-takeover token
+                  engine shared by mobile and a future web app + color math
 - `src/firebase`  `initFirebase` factory — auth persistence is injected by the app
-- `src/utils`     Pure helpers
+- `src/utils`     Pure helpers: local-time formatting, standings/form/clean-sheet
+                  derivations over the `matches` collection
 
 ## Dual consumption
 Bundlers (Metro/web) read `src` directly via the `import` export condition — no build

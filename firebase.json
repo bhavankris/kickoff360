@@ -1,7 +1,7 @@
 {
   "functions": [
     {
-      "source": "packages/functions",
+      "source": "packages/functions/.deploy",
       "codebase": "default",
       "runtime": "nodejs22",
       "predeploy": [
@@ -10,7 +10,8 @@
       "ignore": [
         "node_modules",
         ".git",
-        "*.log"
+        "*.log",
+        ".secret.local"
       ]
     }
   ],

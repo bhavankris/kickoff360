@@ -31,6 +31,15 @@ export const FixtureSchema = z.object({
     season: z.number(),
     round: z.string(),
   }),
+  /** API venue ids are often null for WC2026 — match venues by name. */
+  venue: z
+    .object({
+      id: z.number().nullable(),
+      name: z.string().nullable(),
+      city: z.string().nullable(),
+    })
+    .nullable(),
+  referee: z.string().nullable(),
 });
 
 export type Fixture = z.infer<typeof FixtureSchema>;

@@ -1,4 +1,13 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "scorers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "goals", "order": "DESCENDING" },
+        { "fieldPath": "assists", "order": "DESCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

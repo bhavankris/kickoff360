@@ -8,13 +8,14 @@
     ".": { "import": "./src/index.ts", "default": "./dist/index.js" },
     "./types": { "import": "./src/types/index.ts", "default": "./dist/types/index.js" },
     "./schemas": { "import": "./src/schemas/index.ts", "default": "./dist/schemas/index.js" },
+    "./data": { "import": "./src/data/index.ts", "default": "./dist/data/index.js" },
     "./hooks": { "import": "./src/hooks/index.ts", "default": "./dist/hooks/index.js" },
     "./api": { "import": "./src/api/index.ts", "default": "./dist/api/index.js" },
     "./theme": { "import": "./src/theme/index.ts", "default": "./dist/theme/index.js" },
     "./firebase": { "import": "./src/firebase/index.ts", "default": "./dist/firebase/index.js" }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src"
   },

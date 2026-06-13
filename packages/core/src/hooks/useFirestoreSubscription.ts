@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQueryClient, type QueryKey } from '@tanstack/react-query';
-import { onSnapshot, type Query } from 'firebase/firestore';
+import { onSnapshot, type DocumentReference, type Query } from 'firebase/firestore';
 
 /**
  * Bridge a Firestore realtime listener into the TanStack Query cache.
@@ -57,5 +57,47 @@ export function useFirestoreSubscription<T>(
     };
     // firestoreQuery identity changes per render; we intentionally key the effect off
     // the serialized queryKey (keyStr) rather than the query object.
+  }, [keyStr, queryClient]);
+}
+
+/** Same bridge for a single document (e.g. a live match-detail doc). */
+export function useFirestoreDocSubscription<T>(
+  queryKey: QueryKey,
+  ref: DocumentReference<T>,
+): void {
+  const queryClient = useQueryClient();
+  const keyStr = JSON.stringify(queryKey);
+
+  useEffect(() => {
+    let entry = registry.get(keyStr);
+
+    if (!entry) {
+      const unsub = onSnapshot(
+        ref,
+        (snap) => {
+          queryClient.setQueryData(queryKey, snap.exists() ? snap.data() : null);
+        },
+        (err) => {
+          queryClient.setQueryData(queryKey, () => {
+            throw err;
+          });
+        },
+      );
+      entry = { count: 0, unsub };
+      registry.set(keyStr, entry);
+    }
+
+    entry.count += 1;
+
+    return () => {
+      const current = registry.get(keyStr);
+      if (!current) return;
+      current.count -= 1;
+      if (current.count <= 0) {
+        current.unsub();
+        registry.delete(keyStr);
+      }
+    };
+    // Like above: keyed off the serialized queryKey, not the ref identity.
   }, [keyStr, queryClient]);
 }

@@ -40,7 +40,20 @@
       ],
       "expo-secure-store",
       "expo-localization",
-      "@react-native-google-signin/google-signin"
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.649670745636-q2bu64sakpqdrqc2nbqv93e60gm88jbu"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

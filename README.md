@@ -20,7 +20,25 @@ packages/config      Shared tsconfig / eslint / prettier
 platform SDK. Platform code lives in `apps/*` behind `.native.ts` / `.web.ts`
 adapters. An ESLint rule enforces this.
 
+## The app
+
+Onboarding (Google → display name → pick your nation, with the whole app
+re-theming live to your team's colors), then five tabs: **Home** (your team's
+hero match, live now, today's schedule, your group), **Matches** (full
+schedule + filters), **Live** (live hub with countdown + empty state),
+**Groups** (all 12 tables), **Players** (Golden Boot / Top Assists / Golden
+Glove). Every match opens the **Match Centre** — summary timeline, team stats,
+formation pitch with lineups, and venue info. Dark/light mode and a
+subtle/full theme-takeover toggle live in the profile.
+
+Live scores stream from Firestore via `onSnapshot` (bridged into TanStack
+Query), so goals land on every screen in real time.
+
 ## Develop
+
+> **New machine?** Follow the full step‑by‑step [End‑to‑End Setup guide
+> (Windows & macOS)](docs/SETUP.md) — tooling, env, Firebase/Auth, run modes, and
+> troubleshooting. The quickstart below assumes the prerequisites are already installed.
 
 ```bash
 pnpm install                 # from repo root
@@ -29,6 +47,10 @@ pnpm build                   # turbo build (core → functions)
 
 cd apps/mobile && pnpm start # Expo dev server
 firebase emulators:start     # local Auth + Firestore + Functions
+
+# Demo data (matches / matchDetails / scorers collections):
+pnpm --filter @repo/functions seed       # WC2026 dataset, matchday 2 live "now"
+pnpm --filter @repo/functions simulate   # real-time goal simulation via Firestore
 ```
 
 ## Manual setup (account-bound — not scaffolded)
@@ -56,9 +78,10 @@ search for `REPLACE_` to find them.
      `cd packages/functions && firebase functions:secrets:set API_SPORTS_KEY`.
 
 4. **EAS (builds)**
-   - `npm i -g eas-cli && cd apps/mobile && eas init && eas build:configure`.
-   - `eas build --profile development --platform android` for a dev build
-     (required — native Google Sign-In does not work in Expo Go).
+   - `pnpm add -g eas-cli && cd apps/mobile && eas init && eas build:configure`.
+   - Local build: `cd apps/mobile && pnpm run android` (needs JDK 21 + a booted AVD), or
+   - Cloud build: `eas build --profile development --platform android`
+     (a native build is required — native Google Sign-In does not work in Expo Go).
 
 5. **CI secrets** (GitHub → Settings → Secrets → Actions)
    - `EXPO_TOKEN`, `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID`
@@ -67,6 +90,7 @@ search for `REPLACE_` to find them.
 ## Global tools
 
 ```bash
-npm i -g eas-cli firebase-tools
-# Java 17+ is required for the Firebase Emulator Suite (you have 21 — fine).
+pnpm add -g eas-cli firebase-tools     # run `pnpm setup` first if you've never used a pnpm global
+# JDK 21 (HotSpot: Temurin/Corretto/Zulu) — required for the Android build AND the
+# Firebase Emulator Suite. Use 21, not 17. See docs/SETUP.md §1.3.
 ```

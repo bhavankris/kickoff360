@@ -2,6 +2,7 @@
 // Functions import @repo/core (compiled dist) for shared types + Zod schemas.
 export { pollSchedule } from './poll/schedule.js';
 export { pollLiveScores } from './poll/liveScores.js';
+export { pollMatchDetails } from './poll/matchDetails.js';
 export { pollStandings } from './poll/standings.js';
 export { pollTopPlayers } from './poll/topPlayers.js';
 export { flipLiveActive } from './poll/liveWindow.js';

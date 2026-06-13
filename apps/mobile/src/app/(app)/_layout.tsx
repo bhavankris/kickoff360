@@ -1,12 +1,11 @@
-import { Tabs } from 'expo-router';
+import { Stack } from 'expo-router';
 
-export default function AppTabsLayout() {
+export default function AppLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: true, tabBarActiveTintColor: 'rgb(30 64 175)' }}>
-      <Tabs.Screen name="index" options={{ title: 'Schedule' }} />
-      <Tabs.Screen name="scores" options={{ title: 'Live' }} />
-      <Tabs.Screen name="table" options={{ title: 'Table' }} />
-      <Tabs.Screen name="players" options={{ title: 'Players' }} />
-    </Tabs>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="match/[id]" />
+      <Stack.Screen name="profile" options={{ presentation: 'modal' }} />
+    </Stack>
   );
 }
